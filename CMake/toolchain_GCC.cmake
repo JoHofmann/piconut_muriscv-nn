@@ -18,20 +18,17 @@
 
 # Contains toolchain configurations and settings for using GCC
 
-# Path to your RISC-V GCC compiler
-set(RISCV_GCC_PREFIX "/opt/riscv" CACHE PATH "Install location of GCC RISC-V toolchain.")
-set(RISCV_GCC_BASENAME "riscv32-unknown-elf" CACHE STRING "Base name of the toolchain executables.")
-set(TC_PREFIX "${RISCV_GCC_PREFIX}/bin/${RISCV_GCC_BASENAME}-")
+set(RISCV_GCC_BASENAME "riscv64-unknown-elf-" CACHE STRING "Base name of the toolchain executables.")
 
-set(CMAKE_C_COMPILER ${TC_PREFIX}gcc)
-set(CMAKE_CXX_COMPILER ${TC_PREFIX}g++)
-set(CMAKE_ASM_COMPILER ${TC_PREFIX}gcc)
-set(CMAKE_LINKER ${TC_PREFIX}ld)
-set(CMAKE_OBJCOPY ${TC_PREFIX}objcopy)
-set(CMAKE_OBJDUMP ${TC_PREFIX}objdump)
-set(CMAKE_AR ${TC_PREFIX}ar)
-set(CMAKE_RANLIB ${TC_PREFIX}ranlib)
-set(CMAKE_STRIP ${TC_PREFIX}strip)
+set(CMAKE_C_COMPILER ${RISCV_GCC_BASENAME}gcc)
+set(CMAKE_CXX_COMPILER ${RISCV_GCC_BASENAME}g++)
+set(CMAKE_ASM_COMPILER ${RISCV_GCC_BASENAME}gcc)
+set(CMAKE_LINKER ${RISCV_GCC_BASENAME}ld)
+set(CMAKE_OBJCOPY ${RISCV_GCC_BASENAME}objcopy)
+set(CMAKE_OBJDUMP ${RISCV_GCC_BASENAME}objdump)
+set(CMAKE_AR ${RISCV_GCC_BASENAME}ar)
+set(CMAKE_RANLIB ${RISCV_GCC_BASENAME}ranlib)
+set(CMAKE_STRIP ${RISCV_GCC_BASENAME}strip)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")

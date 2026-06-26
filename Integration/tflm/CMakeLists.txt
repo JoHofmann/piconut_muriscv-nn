@@ -49,6 +49,11 @@ if(USE_CMSIS_NN_WRAPPER)
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/depthwise_conv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/pooling.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/softmax.cc
+    #
+    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/pad.cc
+    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/maximum_minimum.cc
+    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/transpose.cc
+    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/batch_matmul.cc
   )
 else()
   # Files for running with default TensorFlow kernels
@@ -159,6 +164,7 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/dequantize.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/prelu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/pad.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/pad_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/floor.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/split_v.cc
  # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/svdf_common.cc
@@ -179,6 +185,8 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/hard_swish.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/ceil.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/strided_slice.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/depthwise_conv_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logical.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/fully_connected.h
@@ -193,6 +201,10 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/ethosu.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/activations_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/ethosu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/pad.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/maximum_minimum.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/transpose.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/conv.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/squared_difference.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/l2norm.cc
@@ -260,8 +272,10 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/var_handle.cc
  # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/unidirectional_sequence_lstm_test_config.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/transpose.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/transpose_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logistic_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/reshape_common.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/strided_slice_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/debug_log.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/micro_op_resolver.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/micro_op_resolver.cc
@@ -353,7 +367,7 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/mul.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/tanh.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/l2normalization.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/depthwise_conv.h
+  #~ ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/depthwise_batch_matmul.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/integer_ops/pooling.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/maximum_minimum.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/floor.h
@@ -435,7 +449,7 @@ endif()
 option(DISABLE_TFLM_AWW_INTG_TESTS "Enable tflm integration tests for aww model" OFF)
 option(DISABLE_TFLM_IC_INTG_TESTS "Enable tflm integration tests for ic model" OFF)
 option(DISABLE_TFLM_TOY_INTG_TESTS "Enable tflm integration tests for toy model" OFF)
-option(DISABLE_TFLM_vWW_INTG_TESTS "Enable tflm integration tests for vww model" OFF)
+option(DISABLE_TFLM_VWW_INTG_TESTS "Enable tflm integration tests for vww model" OFF)
 
 if(NOT DISABLE_TFLM_AWW_INTG_TESTS)
     add_subdirectory(aww)

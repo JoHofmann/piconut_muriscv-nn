@@ -25,6 +25,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 TFLM_REF=${TFLM_REF:-""}
 
+# Create and activate a virtual environment
+VENV_DIR="${SCRIPT_DIR}/venv"
+if [ ! -d "$VENV_DIR" ]; then
+  echo "Creating Python virtual environment at ${VENV_DIR}."
+  python3 -m venv "$VENV_DIR"
+fi
+
+# Activate the virtual environment and install dependencies
+source "$VENV_DIR/bin/activate"
+pip install --upgrade pip
+pip install numpy Pillow
+
+
+
 echo "Download TFLM sources."
 if [ ! -d "tflite-micro" ]; then
   git clone https://github.com/tensorflow/tflite-micro.git

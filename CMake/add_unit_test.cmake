@@ -43,8 +43,9 @@ macro(add_muriscv_nn_unit_test TEST_NAME)
                      WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
         elseif(${SIMULATOR} STREQUAL "Spike")
             add_test(NAME ${TEST_NAME}
-                     COMMAND ${PROJECT_SOURCE_DIR}/Sim/Spike/run.sh ./${TEST_NAME}.elf ${RISCV_ARCH} ${VLEN} ${ELEN}
+              COMMAND spike --isa=rv32im $ENV{RISCV}/riscv32-unknown-elf/bin/pk ./${TEST_NAME}.elf
                      WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+                   # COMMAND spike --isa=rv32im ${RISCV}/riscv32-unknown-elf/bin/pk ./${TEST_NAME}.elf ${RISCV_ARCH} ${VLEN} ${ELEN}
         elseif(${SIMULATOR} STREQUAL "ETISS")
             add_test(NAME ${TEST_NAME}
                      COMMAND ${PROJECT_SOURCE_DIR}/Sim/ETISS/run.sh ./${TEST_NAME}
@@ -69,6 +70,24 @@ macro(add_muriscv_nn_unit_test TEST_NAME)
             add_test(NAME ${TEST_NAME}
                      COMMAND ${PROJECT_SOURCE_DIR}/Sim/Vicuna/run.sh "$<TARGET_FILE:${TEST_NAME}>.path"
                      WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+          elseif(${SIMULATOR} STREQUAL "PicoNut")
+            message(WARNING "ll: ${PN_CFG_CPU_RESET_ADR}")
+
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T ${PN_SOURCE_DIR}/sw/common/piconut.ld")
+            target_link_options(${TEST_NAME} PRIVATE "LINKER:--defsym,CFG_START_ADDRESS=${PN_CFG_CPU_RESET_ADR}")
+            target_link_options(${TEST_NAME} PRIVATE "LINKER:--defsym,CFG_CODE_SIZE=${PN_CFG_SYS_CODE_SIZE}")
+            target_link_options(${TEST_NAME} PRIVATE "LINKER:--defsym,CFG_RAM_SIZE=${PN_CFG_SYS_RAM_SIZE}")
+            target_link_options(${TEST_NAME} PRIVATE "LINKER:--defsym,CFG_STACK_SIZE=${PN_CFG_SYS_STACK_SIZE}")
+            target_link_options(${TEST_NAME} PRIVATE "LINKER:--defsym,CFG_HEAP_SIZE=${PN_CFG_SYS_HEAP_SIZE}")
+
+            target_link_options(${TEST_NAME} PRIVATE "-static")
+            target_link_options(${TEST_NAME} PRIVATE "-nostartfiles")
+            target_link_libraries(${TEST_NAME} PRIVATE c "${PN_SOURCE_DIR}/build/sw/common/libpiconut.a")
+
+            add_test(NAME ${TEST_NAME}
+              COMMAND ${PN_SOURCE_DIR}/build/systems/refdesign/hw/sim/refdesign_sim ./${TEST_NAME}.elf
+                     WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
         else()
             message(FATAL_ERROR "Could not add test for specified simulator ${SIMULATOR}!")
         endif()
@@ -84,6 +103,8 @@ macro(add_muriscv_nn_unit_test TEST_NAME)
     elseif(${SIMULATOR} STREQUAL "Vicuna")
         # TODO(fabianpedd): Vicuna needs extra time since its RTL
         set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 10000)
+      elseif(${SIMULATOR} STREQUAL "PicoNut")
+      # No timeout for piconut
     else()
         # Tests should not take longer than 15 seconds
         set_tests_properties(${TEST_NAME} PROPERTIES TIMEOUT 15)
