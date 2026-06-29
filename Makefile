@@ -89,7 +89,7 @@ download-tflm: $(TFLM_FILES)
 $(TFLM_FILES) &:
 	@cd $(TFLM_DIR) && env -i PATH="$(PATH)" ./download_tflm.sh
 
-	@# Fix source tree creation: copy reference kernels that cmsis-nn implements but muriscv-nn isn't.
+	@# Fix source tree creation: copy reference kernels that cmsis-nn implements but muriscv-nn doesnt't.
 	@src="$(TFLM_DIR)/tflite-micro/tensorflow/lite/micro/kernels"; \
 	dst="$(TFLM_DIR)/tensorflow/lite/micro/kernels"; \
 	/bin/bash -c "cp $$src/{transpose.cc,pad.cc,maximum_minimum.cc,batch_matmul.cc} $$dst/"
@@ -111,7 +111,7 @@ clean-tflm:
 
 
 # Define the library ...
-MODULE := tflm
+MODULE := pn_tflm
 
 LIB := $(PN_MODULE_BUILD_DIR)/Integration/tflm/lib$(MODULE).a
 

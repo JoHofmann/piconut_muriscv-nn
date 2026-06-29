@@ -446,6 +446,26 @@ else()
 endif()
 
 
+
+# Create archive lib named pn_tflm containing tflm and muriscvnn for convinient export.
+set(MERGED_LIB "${CMAKE_CURRENT_BINARY_DIR}/libpn_tflm.a")
+set(MRI_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/merge_tflm_muriscvnn.mri")
+
+add_custom_command(
+  OUTPUT "${MERGED_LIB}"
+  COMMAND ${CMAKE_COMMAND} -E echo "CREATE ${MERGED_LIB}"            >  "${MRI_SCRIPT}"
+  COMMAND ${CMAKE_COMMAND} -E echo "ADDLIB $<TARGET_FILE:tflm>"      >> "${MRI_SCRIPT}"
+  COMMAND ${CMAKE_COMMAND} -E echo "ADDLIB $<TARGET_FILE:muriscvnn>" >> "${MRI_SCRIPT}"
+  COMMAND ${CMAKE_COMMAND} -E echo "SAVE"                            >> "${MRI_SCRIPT}"
+  COMMAND ${CMAKE_COMMAND} -E echo "END"                             >> "${MRI_SCRIPT}"
+  COMMAND ${CMAKE_AR} -M < "${MRI_SCRIPT}"
+  DEPENDS tflm muriscvnn
+  VERBATIM
+)
+add_custom_target(pn_tflm ALL DEPENDS "${MERGED_LIB}")
+
+
+
 option(DISABLE_TFLM_AWW_INTG_TESTS "Enable tflm integration tests for aww model" OFF)
 option(DISABLE_TFLM_IC_INTG_TESTS "Enable tflm integration tests for ic model" OFF)
 option(DISABLE_TFLM_TOY_INTG_TESTS "Enable tflm integration tests for toy model" OFF)
