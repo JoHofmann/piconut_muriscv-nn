@@ -60,10 +60,6 @@ TOOLCHAIN = GCC
 ENABLE_UNIT_TESTS = OFF
 SIMULATOR = Spike
 
-# TFLM ...
-TFLM_REF = master
-
-
 
 # Include PicoNut setup ...
 include ../../../piconut.mk
@@ -87,17 +83,31 @@ TFLM_FILES := $(addprefix $(TFLM_DIR)/, $(TFLM_FILE_NAMES))
 download-tflm: $(TFLM_FILES)
 
 $(TFLM_FILES) &:
-	@cd $(TFLM_DIR) && env -i PATH="$(PATH)" ./download_tflm.sh
+	@flock /tmp/piconut_tflm_download.lock -c '\
+	if [ ! -d "$(TFLM_DIR)/tensorflow" ]; then \
+		cd $(TFLM_DIR) && env -i PATH="$(PATH)" VERBOSE=$(VERBOSE) ./download_tflm.sh; \
+		src="$(TFLM_DIR)/tflite-micro/tensorflow/lite/micro/kernels"; \
+		dst="$(TFLM_DIR)/tensorflow/lite/micro/kernels"; \
+		/bin/bash -c "cp $$$$src/{transpose.cc,pad.cc,maximum_minimum.cc,batch_matmul.cc} $$$$dst/"; \
+	fi'
 
-	@# Fix source tree creation: copy reference kernels that cmsis-nn implements but muriscv-nn doesnt't.
-	@src="$(TFLM_DIR)/tflite-micro/tensorflow/lite/micro/kernels"; \
-	dst="$(TFLM_DIR)/tensorflow/lite/micro/kernels"; \
-	/bin/bash -c "cp $$src/{transpose.cc,pad.cc,maximum_minimum.cc,batch_matmul.cc} $$dst/"
+# $(TFLM_FILES) &:
+# 	@cd $(TFLM_DIR) && env -i PATH="$(PATH)" VERBOSE=$(VERBOSE) ./download_tflm.sh
+# 
+# 	@# Fix source tree creation: copy reference kernels that cmsis-nn implements but muriscv-nn doesnt't.
+# 	@src="$(TFLM_DIR)/tflite-micro/tensorflow/lite/micro/kernels"; \
+# 	dst="$(TFLM_DIR)/tensorflow/lite/micro/kernels"; \
+# 	/bin/bash -c "cp $$src/{transpose.cc,pad.cc,maximum_minimum.cc,batch_matmul.cc} $$dst/"
 
 
 .PHONY: clean-tflm
 clean-tflm:
-	rm -rf $(TFLM_FILES)
+ifneq (0,$(VERBOSE))
+	rm -rf $(TFLM_FILES) Integration/tflm/venv/
+else
+	@echo CLEAN $(PN_MODULE_SOURCE_DIR)/Integration/tflm
+	@rm -rf $(TFLM_FILES) Integration/tflm/venv/
+endif
 
 
 
@@ -115,21 +125,6 @@ MODULE := pn_tflm
 
 LIB := $(PN_MODULE_BUILD_DIR)/Integration/tflm/lib$(MODULE).a
 
-# TBD+: Install headers
-#
-# TFLM_PREFIX := muriscv-nn/Integration/tflm
-# 
-# HEADERS := \
-# 	tensorflow/compiler/mlir/lite/core/api/error_reporter.h \
-# 	tensorflow/lite/core/api/error_reporter.h \
-# 	tensorflow/lite/micro/compatibility.h \
-# 	tensorflow/lite/micro/micro_interpreter.h \
-# 	tensorflow/lite/micro/micro_mutable_op_resolver.h \
-# 	tensorflow/lite/micro/tflite_bridge/micro_error_reporter.h \
-# 	tensorflow/lite/schema/schema_generated.h
-# 
-
-	
 $(PN_MODULE_BUILD_DIR)/Makefile: $(TFLM_FILES)
 ifneq (0,$(VERBOSE))
 	cmake \
@@ -209,16 +204,8 @@ build-all: $(LIB)
 .PHONY: install-all
 install-all:
 	$(PN_INSTALL_SW_LIB) $(LIB)
-	# TBD+: Why is muriscv-nn not compiled into libtflm?
-	$(PN_INSTALL_SW_LIB) $(PN_MODULE_BUILD_DIR)/Source/libmuriscvnn.a
-	# Install headers
-	# $(foreach header,$(HEADERS), \
-	# 	$(PN_INSTALL_TREE) sw/include/$(header) $(TFLM_PREFIX)/$(header); \
-	# )
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Integration/tflm/third_party/ruy
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Integration/tflm/third_party/gemmlowp
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Integration/tflm/third_party/kissfft
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Integration/tflm/third_party/flatbuffers
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Integration/tflm/third_party/flatbuffers/include
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Include
-	# $(PN_INSTALL_SW_INCLUDE) muriscv-nn/Include/CMSIS/NN
+	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/tensorflow  Integration/tflm/tensorflow
+	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/signal      Integration/tflm/signal
+	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/third_party Integration/tflm/third_party
+	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm Include
+

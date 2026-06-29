@@ -20,40 +20,55 @@
 # Prevent silent failures
 set -euo pipefail
 
+VERBOSE=${VERBOSE:-0}
+
 # Path to this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 TFLM_REF=${TFLM_REF:-""}
 
+log() {
+  echo "[sw/libs/piconut_muriscvnn] $@"
+}
+
+# Configure quiet flags for external tools
+Q_FLAG=""
+if [ "$VERBOSE" -eq 0 ]; then
+  Q_FLAG="-q"
+fi
+
 # Create and activate a virtual environment
 VENV_DIR="${SCRIPT_DIR}/venv"
 if [ ! -d "$VENV_DIR" ]; then
-  echo "Creating Python virtual environment at ${VENV_DIR}."
+  log "Creating Python virtual environment at ${VENV_DIR}"
   python3 -m venv "$VENV_DIR"
 fi
 
 # Activate the virtual environment and install dependencies
 source "$VENV_DIR/bin/activate"
-pip install --upgrade pip
-pip install numpy Pillow
+pip install $Q_FLAG --upgrade pip
+pip install $Q_FLAG numpy Pillow
 
 
-
-echo "Download TFLM sources."
+log "Download TFLM sources"
 if [ ! -d "tflite-micro" ]; then
-  git clone https://github.com/tensorflow/tflite-micro.git
+  git clone $Q_FLAG https://github.com/tensorflow/tflite-micro.git
   cd tflite-micro
   if [[ "$TFLM_REF" != "" ]]
   then
-    git checkout $TFLM_REF
+    git checkout $Q_FLAG $TFLM_REF
   fi
 else
   cd tflite-micro
-  git pull
+  git pull $Q_FLAG
 fi
 
-echo "Generate TFLM source tree."
-python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py .. --makefile_options="OPTIMIZED_KERNEL_DIR=cmsis_nn"
+log "Generate TFLM source tree"
+if [ "$VERBOSE" -eq 0 ]; then
+  python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py .. --makefile_options="OPTIMIZED_KERNEL_DIR=cmsis_nn" > /dev/null
+else
+  python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py .. --makefile_options="OPTIMIZED_KERNEL_DIR=cmsis_nn"
+fi
 
 # Use this command to build the source tree without the CMSIS-NN wrapper (also disable USE_CMSIS_NN_WRAPPER in CMakeLists.txt!)
 # python3 tensorflow/lite/micro/tools/project_generation/create_tflm_tree.py ..
