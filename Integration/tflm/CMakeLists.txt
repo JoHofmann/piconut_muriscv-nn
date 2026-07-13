@@ -150,6 +150,7 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/dequantize.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/kernel_util.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/concatenation.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/embedding_lookup.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/space_to_batch_nd.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/resize_nearest_neighbor.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/softmax.h
@@ -276,6 +277,9 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logistic_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/reshape_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/strided_slice_common.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/select.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/dynamic_update_slice.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/dynamic_update_slice.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/debug_log.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/micro_op_resolver.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/micro_op_resolver.cc
@@ -372,6 +376,8 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/maximum_minimum.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/floor.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/lstm_cell.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/select.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/reference/comparisons.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/compatibility.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/runtime_shape.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/kernels/internal/max.h
