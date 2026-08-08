@@ -44,23 +44,28 @@
 
 # Environment ...
 PN_SW_OS = bare
-# PN_MARCH = rv32im_zve32x
-# PN_MARCH = rv32im
+
+
+# Config for unit tests ...
+PN_CFG_SYS_CODE_SIZE  := 0x00100000
+PN_CFG_SYS_RAM_SIZE   := 0x00100000
+PN_CFG_SYS_STACK_SIZE := 0x00050000
+PN_CFG_SYS_HEAP_SIZE  := 0x00050000
+
 
 # Muriscv-NN ...
 TFLM_REF = 348eed01b6485f6282b805672ebf1e2a88589830
 
-USE_VEXT = OFF
+USE_VEXT = ON
 VLEN = 1024
-# ELEN = 64
 ELEN = 32
 
 USE_PORTABLE = OFF
 USE_PEXT = OFF
 TOOLCHAIN = GCC
 
-ENABLE_UNIT_TESTS = OFF
-SIMULATOR = Spike
+ENABLE_UNIT_TESTS = ON
+SIMULATOR = PicoNut
 
 
 # Include PicoNut setup ...
@@ -182,6 +187,8 @@ else
 		--log-level=WARNING > /dev/null
 endif
 
+# Phony so the cmake project can handle the dependecies.
+.PHONY: $(LIB)
 $(LIB): $(PN_MODULE_BUILD_DIR)/Makefile
 ifneq (0,$(VERBOSE))
 	$(MAKE) -C $(PN_MODULE_BUILD_DIR) all
@@ -196,6 +203,13 @@ endif
 #   Exported Targets                                                           #
 #                                                                              #
 ################################################################################
+
+
+# Verify ...
+.PHONY: verify-sim
+verify-sim: $(LIB)
+	$(MAKE) -C $(PN_MODULE_BUILD_DIR) test
+
 
 # Exported targets ...
 .PHONY: build-all

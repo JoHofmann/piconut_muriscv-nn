@@ -34,4 +34,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcm
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -march=${RISCV_ARCH} -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
+# Use rv32im for linking.
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -march=rv32im -mabi=${RISCV_ABI} -mcmodel=${RISCV_CMODEL}")
