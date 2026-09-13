@@ -56,6 +56,9 @@ PN_CFG_SYS_HEAP_SIZE  := 0x00050000
 # Muriscv-NN ...
 TFLM_REF = 348eed01b6485f6282b805672ebf1e2a88589830
 
+# Build type: Release or Debug
+BUILD_TYPE = Release
+
 USE_VEXT = ON
 VLEN = 1024
 ELEN = 32
@@ -133,6 +136,7 @@ LIB := $(PN_MODULE_BUILD_DIR)/Integration/tflm/lib$(MODULE).a
 $(PN_MODULE_BUILD_DIR)/Makefile: $(TFLM_FILES_STAMP)
 ifneq (0,$(VERBOSE))
 	cmake \
+		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
 		-DENABLE_INTG_TESTS=ON \
 		-DTOOLCHAIN=$(TOOLCHAIN) \
 		-DUSE_PORTABLE=$(USE_PORTABLE) \
@@ -160,6 +164,7 @@ ifneq (0,$(VERBOSE))
 else
 	@echo $(PN_BUILD_PREFIX)SW-CMAKE $(patsubst $(PN_MODULE_BUILD_DIR)/%, %, $(LIB)): VEXT=$(USE_VEXT), VLEN=$(VLEN), ELEN=$(ELEN); \
 	cmake \
+		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
 		-DENABLE_INTG_TESTS=ON \
 		-DTOOLCHAIN=$(TOOLCHAIN) \
 		-DUSE_PORTABLE=$(USE_PORTABLE) \
@@ -222,4 +227,6 @@ install-all:
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/signal      Integration/tflm/signal
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/third_party Integration/tflm/third_party
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm Include
+	$(PN_INSTALL_SW_INCLUDE) PicoNut/pn_profiler.h
+
 
