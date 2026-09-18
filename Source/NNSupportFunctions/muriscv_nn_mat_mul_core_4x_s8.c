@@ -111,44 +111,101 @@ int8_t *muriscv_nn_mat_mul_core_4x_s8(const int32_t row_elements,
             loop_ptr += vl;
         }
 
-        vl = vsetvl_e32m4(row_elements);
+//        vl = vsetvl_e32m4(row_elements);
+//
+//        vint32m1_t reduct_0 = vmv_v_x_i32m1(0, vl);
+//        reduct_0 = __riscv_vredsum_vs_i32m4_i32m1(sum_tmp_v, reduct_0, vl);
+//        int32_t sum_tmp = vmv_x_s_i32m1_i32(reduct_0);
+//
+//        reduct_0 = vmv_v_x_i32m1(0, vl);
+//        reduct_0 = __riscv_vredsum_vs_i32m4_i32m1(acc_n0_v, reduct_0, vl);
+//
+//        vint32m1_t reduct_1 = vmv_v_x_i32m1(0, vl);
+//        reduct_1 = __riscv_vredsum_vs_i32m4_i32m1(acc_n1_v, reduct_1, vl);
+//
+//        vint32m1_t reduct_2 = vmv_v_x_i32m1(0, vl);
+//        reduct_2 = __riscv_vredsum_vs_i32m4_i32m1(acc_n2_v, reduct_2, vl);
+//
+//        vint32m1_t reduct_3 = vmv_v_x_i32m1(0, vl);
+//        reduct_3 = __riscv_vredsum_vs_i32m4_i32m1(acc_n3_v, reduct_3, vl);
+//
+//        vl = vsetvl_e32m4(4);
+//        vint32m4_t acc_vec = __riscv_vlmul_ext_v_i32m1_i32m4(reduct_0);
+//        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_1), (size_t)1, vl);
+//        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_2), (size_t)2, vl);
+//        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_3), (size_t)3, vl);
+//
+//        // int32_t res[4] = {0}; //Why are these here?
+//        // vse32_v_i32m4(res, acc_vec, vl);
+//
+//        sum_tmp *= conv_params->input_offset;
+//        if (bias)
+//            sum_tmp += bias[i];
+//
+//        acc_vec = vadd_vx_i32m4(acc_vec, sum_tmp, vl);
+//        acc_vec = muriscv_nn_requantize_vint32m4(acc_vec, quant_params->multiplier[i], quant_params->shift[i], vl);
+//        acc_vec = vadd_vx_i32m4(acc_vec, conv_params->output_offset, vl);
+//        acc_vec = vmax_vx_i32m4(acc_vec, conv_params->activation.min, vl);
+//        acc_vec = vmin_vx_i32m4(acc_vec, conv_params->activation.max, vl);
+//        vint8m1_t acc_packed = vnclip_wx_i8m1(vnclip_wx_i16m2(acc_vec, 0, vl), 0, vl);
+//        vsse8_v_i8m1(output, out_ch, acc_packed, vl);
 
-        vint32m1_t reduct_0 = vmv_v_x_i32m1(0, vl);
-        reduct_0 = __riscv_vredsum_vs_i32m4_i32m1(sum_tmp_v, reduct_0, vl);
-        int32_t sum_tmp = vmv_x_s_i32m1_i32(reduct_0);
-
-        reduct_0 = vmv_v_x_i32m1(0, vl);
-        reduct_0 = __riscv_vredsum_vs_i32m4_i32m1(acc_n0_v, reduct_0, vl);
-
-        vint32m1_t reduct_1 = vmv_v_x_i32m1(0, vl);
-        reduct_1 = __riscv_vredsum_vs_i32m4_i32m1(acc_n1_v, reduct_1, vl);
-
-        vint32m1_t reduct_2 = vmv_v_x_i32m1(0, vl);
-        reduct_2 = __riscv_vredsum_vs_i32m4_i32m1(acc_n2_v, reduct_2, vl);
-
-        vint32m1_t reduct_3 = vmv_v_x_i32m1(0, vl);
-        reduct_3 = __riscv_vredsum_vs_i32m4_i32m1(acc_n3_v, reduct_3, vl);
-
-        vl = vsetvl_e32m4(4);
-        vint32m4_t acc_vec = __riscv_vlmul_ext_v_i32m1_i32m4(reduct_0);
-        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_1), (size_t)1, vl);
-        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_2), (size_t)2, vl);
-        acc_vec = __riscv_vslideup_vx_i32m4(acc_vec, __riscv_vlmul_ext_v_i32m1_i32m4(reduct_3), (size_t)3, vl);
-
-        // int32_t res[4] = {0}; //Why are these here?
-        // vse32_v_i32m4(res, acc_vec, vl);
-
-        sum_tmp *= conv_params->input_offset;
-        if (bias)
-            sum_tmp += bias[i];
-
-        acc_vec = vadd_vx_i32m4(acc_vec, sum_tmp, vl);
-        acc_vec = muriscv_nn_requantize_vint32m4(acc_vec, quant_params->multiplier[i], quant_params->shift[i], vl);
-        acc_vec = vadd_vx_i32m4(acc_vec, conv_params->output_offset, vl);
-        acc_vec = vmax_vx_i32m4(acc_vec, conv_params->activation.min, vl);
-        acc_vec = vmin_vx_i32m4(acc_vec, conv_params->activation.max, vl);
-        vint8m1_t acc_packed = vnclip_wx_i8m1(vnclip_wx_i16m2(acc_vec, 0, vl), 0, vl);
-        vsse8_v_i8m1(output, out_ch, acc_packed, vl);
+       vl = vsetvl_e32m4(row_elements);
+       
+       // 1. Reduce and extract sum_tmp to scalar
+       vint32m1_t reduct_sum = vmv_v_x_i32m1(0, vl);
+       reduct_sum = __riscv_vredsum_vs_i32m4_i32m1(sum_tmp_v, reduct_sum, vl);
+       int32_t sum_tmp = vmv_x_s_i32m1_i32(reduct_sum);
+  
+       // 2. Reduce and extract the 4 row accumulators to scalars
+       vint32m1_t reduct_0 = vmv_v_x_i32m1(0, vl);
+       reduct_0 = __riscv_vredsum_vs_i32m4_i32m1(acc_n0_v, reduct_0, vl);
+       int32_t res0 = vmv_x_s_i32m1_i32(reduct_0);
+  
+       vint32m1_t reduct_1 = vmv_v_x_i32m1(0, vl);
+       reduct_1 = __riscv_vredsum_vs_i32m4_i32m1(acc_n1_v, reduct_1, vl);
+       int32_t res1 = vmv_x_s_i32m1_i32(reduct_1);
+  
+       vint32m1_t reduct_2 = vmv_v_x_i32m1(0, vl);
+       reduct_2 = __riscv_vredsum_vs_i32m4_i32m1(acc_n2_v, reduct_2, vl);
+       int32_t res2 = vmv_x_s_i32m1_i32(reduct_2);
+  
+       vint32m1_t reduct_3 = vmv_v_x_i32m1(0, vl);
+       reduct_3 = __riscv_vredsum_vs_i32m4_i32m1(acc_n3_v, reduct_3, vl);
+       int32_t res3 = vmv_x_s_i32m1_i32(reduct_3);
+  
+       // 3. Apply input offset and bias
+       sum_tmp *= conv_params->input_offset;
+       if (bias)
+           sum_tmp += bias[i];
+  
+       // 4. Scalar Requantize (No vector register spilling!)
+       res0 = muriscv_nn_requantize(res0 + sum_tmp, quant_params->multiplier[i], quant_params->shift[i]);
+       res1 = muriscv_nn_requantize(res1 + sum_tmp, quant_params->multiplier[i], quant_params->shift[i]);
+       res2 = muriscv_nn_requantize(res2 + sum_tmp, quant_params->multiplier[i], quant_params->shift[i]);
+       res3 = muriscv_nn_requantize(res3 + sum_tmp, quant_params->multiplier[i], quant_params->shift[i]);
+  
+       // 5. Add output offset and clamp
+       res0 += conv_params->output_offset;
+       res1 += conv_params->output_offset;
+       res2 += conv_params->output_offset;
+       res3 += conv_params->output_offset;
+  
+       res0 = MAX(res0, conv_params->activation.min);
+       res1 = MAX(res1, conv_params->activation.min);
+       res2 = MAX(res2, conv_params->activation.min);
+       res3 = MAX(res3, conv_params->activation.min);
+  
+       res0 = MIN(res0, conv_params->activation.max);
+       res1 = MIN(res1, conv_params->activation.max);
+       res2 = MIN(res2, conv_params->activation.max);
+       res3 = MIN(res3, conv_params->activation.max);
+  
+       // 6. Store the 4 results (strided store)
+       *(output + 0 * out_ch) = (int8_t)res0;
+       *(output + 1 * out_ch) = (int8_t)res1;
+       *(output + 2 * out_ch) = (int8_t)res2;
+       *(output + 3 * out_ch) = (int8_t)res3;
 #else
         int32_t col_val_init = (int32_t)*col_base;
         int32_t sum_tmp = col_val_init;

@@ -172,30 +172,61 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
         reduct_4 = __riscv_vredsum_vs_i32m4_i32m1(result_4, reduct_4, vl);
         
 
-        vl = vsetvl_e32m2(5);
-        vint32m2_t output =  __riscv_vlmul_ext_v_i32m1_i32m2(reduct_0);
-        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_1), (size_t)1, vl);
-        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_2), (size_t)2, vl);
-        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_3), (size_t)3, vl);
-        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_4), (size_t)4, vl);
+//        vl = vsetvl_e32m2(5);
+//        vint32m2_t output =  __riscv_vlmul_ext_v_i32m1_i32m2(reduct_0);
+//        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_1), (size_t)1, vl);
+//        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_2), (size_t)2, vl);
+//        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_3), (size_t)3, vl);
+//        output = __riscv_vslideup_vx_i32m2(output, __riscv_vlmul_ext_v_i32m1_i32m2(reduct_4), (size_t)4, vl);
+//
+//        //Requantize and clip
+//        vint32m2_t mult_vec = vmv_v_x_i32m2(dst_multiplier, vl);
+//        vint32m2_t shift_vec = vmv_v_x_i32m2(dst_shift, vl);
+//        output = muriscv_nn_requantize_vint32m2(output, mult_vec, shift_vec, vl);
+//        output = vadd_vx_i32m2(output, dst_offset, vl);
+//        output = vmax_vx_i32m2(output, activation_min, vl);
+//        output = vmin_vx_i32m2(output, activation_max, vl);
+//
+//        //reduction to 8 bit
+//        vint16m1_t output_16 = __riscv_vundefined_i16m1();
+//        output_16 = __riscv_vncvt_x_x_w_i16m1(output, vl);
+//        vint8mf2_t output_8 = __riscv_vundefined_i8mf2();
+//        output_8 = __riscv_vncvt_x_x_w_i8mf2(output_16, vl);
+//        //store
+//        __riscv_vse8_v_i8mf2(dst, output_8, vl);
+//
+//        dst += address_offset * 5;
+//        rhs += rhs_cols * 5;
 
-
-        //Requantize and clip
-        vint32m2_t mult_vec = vmv_v_x_i32m2(dst_multiplier, vl);
-        vint32m2_t shift_vec = vmv_v_x_i32m2(dst_shift, vl);
-        output = muriscv_nn_requantize_vint32m2(output, mult_vec, shift_vec, vl);
-        output = vadd_vx_i32m2(output, dst_offset, vl);
-        output = vmax_vx_i32m2(output, activation_min, vl);
-        output = vmin_vx_i32m2(output, activation_max, vl);
-
-        //reduction to 8 bit
-        vint16m1_t output_16 = __riscv_vundefined_i16m1();
-        output_16 = __riscv_vncvt_x_x_w_i16m1(output, vl);
-        vint8mf2_t output_8 = __riscv_vundefined_i8mf2();
-        output_8 = __riscv_vncvt_x_x_w_i8mf2(output_16, vl);
-        //store
-        __riscv_vse8_v_i8mf2(dst, output_8, vl);
-
+        q31_t res0 = __riscv_vmv_x_s_i32m1_i32(reduct_0);
+        q31_t res1 = __riscv_vmv_x_s_i32m1_i32(reduct_1);
+        q31_t res2 = __riscv_vmv_x_s_i32m1_i32(reduct_2);
+        q31_t res3 = __riscv_vmv_x_s_i32m1_i32(reduct_3);
+        q31_t res4 = __riscv_vmv_x_s_i32m1_i32(reduct_4);
+        
+        // 2. Scalar Requantize
+        res0 = muriscv_nn_requantize(res0, dst_multiplier, dst_shift);
+        res1 = muriscv_nn_requantize(res1, dst_multiplier, dst_shift);
+        res2 = muriscv_nn_requantize(res2, dst_multiplier, dst_shift);
+        res3 = muriscv_nn_requantize(res3, dst_multiplier, dst_shift);
+        res4 = muriscv_nn_requantize(res4, dst_multiplier, dst_shift);
+        
+        // 3. Add offset and clamp
+        res0 = MAX(MIN(res0 + dst_offset, activation_max), activation_min);
+        res1 = MAX(MIN(res1 + dst_offset, activation_max), activation_min);
+        res2 = MAX(MIN(res2 + dst_offset, activation_max), activation_min);
+        res3 = MAX(MIN(res3 + dst_offset, activation_max), activation_min);
+        res4 = MAX(MIN(res4 + dst_offset, activation_max), activation_min);
+        
+        // 4. Store the 5 results
+        // Note: Because we are inside the `if (address_offset == 1)` block, 
+        // these stores are contiguous and the compiler will optimize them efficiently.
+        *dst = (q7_t)res0;
+        *(dst + address_offset) = (q7_t)res1;
+        *(dst + 2 * address_offset) = (q7_t)res2;
+        *(dst + 3 * address_offset) = (q7_t)res3;
+        *(dst + 4 * address_offset) = (q7_t)res4;
+        
         dst += address_offset * 5;
         rhs += rhs_cols * 5;
     }

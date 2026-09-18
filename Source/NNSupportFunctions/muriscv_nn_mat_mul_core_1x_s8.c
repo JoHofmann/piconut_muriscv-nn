@@ -52,37 +52,39 @@ muriscv_nn_status muriscv_nn_mat_mul_core_1x_s8(int32_t row_elements,
     int32_t acc_n0 = 0;
     int32_t sum_tmp = 0;
 #if defined(USE_VEXT)
-    int8_t *row_ptr = (int8_t *)row_base;
-    int8_t *col_ptr = (int8_t *)col_base;
+    const int8_t *row_ptr = row_base;
+    const int8_t *col_ptr = col_base;
     int32_t loop_cnt = row_elements;
 
-    volatile size_t vl = vsetvl_e32m8(row_elements);
-    vint32m8_t acc = vmv_v_x_i32m8(0, vl);
-    vint32m8_t sum = vmv_v_x_i32m8(0, vl);
+    size_t vl = __riscv_vsetvl_e32m4(loop_cnt);
+    vint32m4_t acc = __riscv_vmv_v_x_i32m4(0, vl);
+    vint32m4_t sum = __riscv_vmv_v_x_i32m4(0, vl);
 
     while (loop_cnt > 0)
     {
-        vl = vsetvl_e32m8(loop_cnt);
-        vint32m8_t col_val = vsext_vf4_i32m8(vle8_v_i8m2(col_ptr, vl), vl);
-        vint32m8_t row_val = vsext_vf4_i32m8(vle8_v_i8m2(row_ptr, vl), vl);
+        vl = __riscv_vsetvl_e32m4(loop_cnt);
 
-        acc = vmacc_vv_i32m8(acc, col_val, row_val, vl);
-        sum = vmacc_vv_i32m8(sum, col_val, vmv_v_x_i32m8(1, vl), vl); // TODO(fabianpedd): Should be a tail undisturbed add
+        vint32m4_t col_val = __riscv_vsext_vf4_i32m4(__riscv_vle8_v_i8m1(col_ptr, vl), vl);
+        vint32m4_t row_val = __riscv_vsext_vf4_i32m4(__riscv_vle8_v_i8m1(row_ptr, vl), vl);
+
+        acc = __riscv_vmacc_vv_i32m4(acc, col_val, row_val, vl);
+        sum = __riscv_vadd_vv_i32m4(sum, col_val, vl);
 
         loop_cnt -= vl;
         row_ptr += vl;
         col_ptr += vl;
     }
 
-    vl = vsetvl_e32m8(row_elements);
+    vl = __riscv_vsetvl_e32m4(row_elements);
 
-    vint32m1_t reduct = vmv_v_x_i32m1(0, vl);
-    reduct = __riscv_vredsum_vs_i32m8_i32m1(acc, reduct, vl);
-    acc_n0 = vmv_x_s_i32m1_i32(reduct);
+    vint32m1_t reduct_acc = __riscv_vmv_v_x_i32m1(0, vl);
+    reduct_acc = __riscv_vredsum_vs_i32m4_i32m1(acc, reduct_acc, vl);
+    acc_n0 = __riscv_vmv_x_s_i32m1_i32(reduct_acc);
 
-    reduct = vmv_v_x_i32m1(0, vl);
-    reduct = __riscv_vredsum_vs_i32m8_i32m1(sum, reduct, vl);
-    sum_tmp = vmv_x_s_i32m1_i32(reduct);
+    vint32m1_t reduct_sum = __riscv_vmv_v_x_i32m1(0, vl);
+    reduct_sum = __riscv_vredsum_vs_i32m4_i32m1(sum, reduct_sum, vl);
+    sum_tmp = __riscv_vmv_x_s_i32m1_i32(reduct_sum);
+
 #else
     for (int i = 0; i < row_elements; i++)
     {
