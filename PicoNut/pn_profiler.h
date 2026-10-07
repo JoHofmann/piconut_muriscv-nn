@@ -107,13 +107,15 @@ class pn_profiler : public tflite::MicroProfilerInterface {
 
     static uint64_t read_data()
     {
-        // data accesses are stored in dscratch0 and dscratch1.
+        // data accesses are stored in PicoNut specific CSRs: pn_datacount and pn_datacounth.
         uint32_t lo, hi1, hi2;
         do
         {
-            hi1 = read_csr(dscratch1);
-            lo = read_csr(dscratch0);
-            hi2 = read_csr(dscratch1);
+#define pn_read_csr(reg) read_csr(reg)
+            hi1 = pn_read_csr(CSR_PN_DATACOUNTH);
+            lo = pn_read_csr(CSR_PN_DATACOUNT);
+            hi2 = pn_read_csr(CSR_PN_DATACOUNTH);
+#undef pn_read_csr
         } while (hi1 != hi2);
         return (((uint64_t)hi1) << 32) | lo;
     }
