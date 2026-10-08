@@ -213,7 +213,9 @@ endif
 # Verify ...
 .PHONY: verify-sim
 verify-sim: $(LIB)
+ifeq ($(ENABLE_UNIT_TESTS),ON)
 	$(MAKE) -C $(PN_MODULE_BUILD_DIR) test
+endif
 
 
 # Exported targets ...
