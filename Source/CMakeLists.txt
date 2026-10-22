@@ -47,6 +47,11 @@ if(SIMULATOR)
   if(${SIMULATOR} STREQUAL "Vicuna")
     target_include_directories(${MURISCVNN_LIB} PUBLIC ${CMAKE_SOURCE_DIR}/Sim/Vicuna)
   endif()
+
+  if(${SIMULATOR} STREQUAL "PicoNut")
+    target_include_directories(${MURISCVNN_LIB} PUBLIC "${PN_SOURCE_DIR}/build/pub/sw/include")
+  endif()
+
 endif()
 
 if(BASICMATHSNN)
