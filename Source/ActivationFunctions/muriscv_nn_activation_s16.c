@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * Modifications copyright (C) 2023 Chair of Electronic Design Automation, TUM
+ * Modifications copyright (C) 2026 Johannes Hofmann, THA <johannes.hofmann1@tha.de>
  */
 
 /* ----------------------------------------------------------------------
@@ -32,6 +33,10 @@
 
 #include "muriscv_nn_tables.h"
 #include "muriscv_nn_functions.h"
+
+#if defined(USE_VEXT)
+#include <riscv_vector.h>
+#endif
 
 /**
  *  @ingroup groupNN
@@ -50,10 +55,10 @@
  */
 
 muriscv_nn_status muriscv_nn_activation_s16(const int16_t *input,
-                           int16_t *output,
-                           const int32_t size,
-                           const int32_t left_shift,
-                           const muriscv_nn_activation_type type)
+                                            int16_t *output,
+                                            const int32_t size,
+                                            const int32_t left_shift,
+                                            const muriscv_nn_activation_type type)
 {
     uint32_t abs_input_shift, max_saturation;
     switch (type)
@@ -75,6 +80,67 @@ muriscv_nn_status muriscv_nn_activation_s16(const int16_t *input,
     const int32_t rounding = (abs_left_shift > 0) ? 1 << (abs_left_shift - 1) : 0;
     // Use the LUT for sigmoid and take into account, that
     // tanh(x) = 2*sigmoid(2*x) - 1
+
+#if defined(USE_VEXT)
+
+    size_t vl, avl = size;
+
+    while (avl > 0)
+    {
+        vl = __riscv_vsetvl_e32m4(avl);
+
+        vint32m4_t input_data = __riscv_vsext_vf2_i32m4(__riscv_vle16_v_i16m2(input, vl), vl);
+        input_data = __riscv_vmul_vx_i32m4(input_data, input_multiplier, vl);
+        input_data = __riscv_vadd_vx_i32m4(input_data, rounding, vl);
+        input_data = __riscv_vsra_vx_i32m4(input_data, abs_left_shift, vl);
+
+        vuint32m4_t abs_input_data = __riscv_vreinterpret_v_i32m4_u32m4(
+            __riscv_vmax_vv_i32m4(input_data, __riscv_vneg_v_i32m4(input_data, vl), vl));
+
+        vuint32m4_t uh = __riscv_vsrl_vx_u32m4(abs_input_data, abs_input_shift, vl);
+        vbool8_t compute = __riscv_vmsltu_vx_u32m4_b8(uh, 255, vl);
+
+        vuint16m2_t offsets = __riscv_vnsrl_wx_u16m2(__riscv_vsll_vx_u32m4(uh, 1, vl), 0, vl);
+
+        vuint16m2_t ua16 = __riscv_vloxei16_v_u16m2_m(compute, sigmoid_table_uint16, offsets, vl);
+        vuint16m2_t ub16 = __riscv_vloxei16_v_u16m2_m(
+            compute, sigmoid_table_uint16, __riscv_vadd_vx_u16m2_m(compute, offsets, 2, vl), vl);
+        vuint32m4_t ua = __riscv_vzext_vf2_u32m4_m(compute, ua16, vl);
+        vuint32m4_t ub = __riscv_vzext_vf2_u32m4_m(compute, ub16, vl);
+
+        uint32_t fraction_mask = type == MURISCV_SIGMOID ? 0x1ff : 0x0ff;
+
+        vuint32m4_t ut = __riscv_vand_vx_u32m4_m(compute, abs_input_data, fraction_mask, vl);
+
+        vuint32m4_t result = __riscv_vsub_vv_u32m4_m(compute, ub, ua, vl);
+        result = __riscv_vmul_vv_u32m4_m(compute, result, ut, vl);
+        result =
+            __riscv_vadd_vv_u32m4_m(compute, result, __riscv_vsll_vx_u32m4_m(compute, ua, abs_input_shift, vl), vl);
+        result = __riscv_vmerge_vxm_u32m4(result, max_saturation, __riscv_vmnot_m_b8(compute, vl), vl);
+
+        vbool8_t negative = __riscv_vmslt_vx_i32m4_b8(input_data, 0, vl);
+        if (type == MURISCV_SIGMOID)
+        {
+            result = __riscv_vrsub_vx_u32m4_mu(negative, result, result, (1u << 25) - 1, vl);
+            result = __riscv_vadd_vx_u32m4(result, 1u << 9, vl);
+            result = __riscv_vsrl_vx_u32m4(result, 10, vl);
+        }
+        else
+        {
+            result = __riscv_vsub_vx_u32m4(result, 1u << 23, vl);
+            result = __riscv_vrsub_vx_u32m4_mu(negative, result, result, UINT32_MAX, vl);
+            result = __riscv_vadd_vx_u32m4(result, 1u << 7, vl);
+            result = __riscv_vsrl_vx_u32m4(result, 8, vl);
+        }
+
+        __riscv_vse16_v_i16m2(output, __riscv_vreinterpret_v_u16m2_i16m2(__riscv_vnsrl_wx_u16m2(result, 0, vl)), vl);
+
+        input += vl;
+        output += vl;
+        avl -= vl;
+    }
+
+#else // USE_VEXT
 
     for (int i = 0; i < size; ++i, input++, output++)
     {
@@ -117,7 +183,9 @@ muriscv_nn_status muriscv_nn_activation_s16(const int16_t *input,
         }
         *output = (int16_t)result;
     }
-    
+
+#endif // USE_VEXT
+
     return MURISCV_NN_SUCCESS;
 }
 
