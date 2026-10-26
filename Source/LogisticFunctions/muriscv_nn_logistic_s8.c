@@ -58,7 +58,7 @@ muriscv_nn_status muriscv_nn_logistic_s8(const int8_t *input,
     // |centered| <= 255, multiplier <= 98304: product <= 25067520.
     // The largest left shift is 5, so even that result fits in uint32.
 
-#if defined(USE_VEXT_)
+#if defined(USE_VEXT)
     size_t avl = (size_t)size;
     while (avl > 0)
     {

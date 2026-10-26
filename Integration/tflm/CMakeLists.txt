@@ -49,11 +49,10 @@ if(USE_CMSIS_NN_WRAPPER)
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/depthwise_conv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/pooling.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/softmax.cc
+
     #
-    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/pad.cc
-    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/maximum_minimum.cc
-    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/transpose.cc
-    # ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/batch_matmul.cc
+    # muRISCV-NN specific kernels ...
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Include/muriscv_nn/logistic.cc
   )
 else()
   # Files for running with default TensorFlow kernels
@@ -66,6 +65,10 @@ else()
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/depthwise_conv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/pooling.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/softmax.cc
+    
+    #
+    # muRISCV-NN specific kernels ...
+    ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logistic.cc
   )
 endif()
 
@@ -179,7 +182,7 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/kernel_runner.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/leaky_relu.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/sub.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logistic.cc
+#  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logistic.cc
 #  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/unidirectional_sequence_lstm.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/floor_div.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/kernel_runner.h

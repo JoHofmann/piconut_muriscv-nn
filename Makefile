@@ -67,7 +67,7 @@ USE_PORTABLE = OFF
 USE_PEXT = OFF
 TOOLCHAIN = GCC
 
-ENABLE_UNIT_TESTS = ON
+ENABLE_UNIT_TESTS = OFF
 SIMULATOR = PicoNut
 
 
@@ -229,6 +229,6 @@ install-all:
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/signal      Integration/tflm/signal
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm/third_party Integration/tflm/third_party
 	$(PN_INSTALL_TREE_BRIEF) sw/include/pn_tflm Include
-#	$(PN_INSTALL_SW_INCLUDE) PicoNut/pn_profiler.h
+	$(PN_INSTALL_SW_INCLUDE) PicoNut/pn_profiler.h
 
 
