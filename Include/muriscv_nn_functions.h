@@ -42,12 +42,12 @@
 
 #define USE_INTRINSIC
 
-//MURISCV_NN NEW CODE
-// Include the Vicuna C runtime when running on Vicuna
+// MURISCV_NN NEW CODE
+//  Include the Vicuna C runtime when running on Vicuna
 #ifdef SIM_VICUNA
 #include "crt/vicuna_crt.h"
 #endif
-//MURISCV_NN END OF NEW CODE
+// MURISCV_NN END OF NEW CODE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -74,8 +74,8 @@ extern "C" {
  *        muriscv-nn  to perform the convolution.
  *
  * @param[in, out] ctx            Function context that contains the additional buffer if required by the function.
- *                                muriscv_nn_convolve_wrapper_s4_get_buffer_size will return the buffer_size if required.
- *                                The caller is expected to clear the buffer ,if applicable, for security reasons.
+ *                                muriscv_nn_convolve_wrapper_s4_get_buffer_size will return the buffer_size if
+ * required. The caller is expected to clear the buffer ,if applicable, for security reasons.
  * @param[in]      conv_params    Convolution parameters (e.g. strides, dilations, pads,...).
  *                                Range of conv_params->input_offset  : [-127, 128]
  *                                Range of conv_params->output_offset : [-128, 127]
@@ -97,16 +97,16 @@ extern "C" {
  *
  */
 muriscv_nn_status muriscv_nn_convolve_wrapper_s4(const muriscv_nn_context *ctx,
-                                            const muriscv_nn_conv_params *conv_params,
-                                            const muriscv_nn_per_channel_quant_params *quant_params,
-                                            const muriscv_nn_dims *input_dims,
-                                            const int8_t *input_data,
-                                            const muriscv_nn_dims *filter_dims,
-                                            const int8_t *filter_data,
-                                            const muriscv_nn_dims *bias_dims,
-                                            const int32_t *bias_data,
-                                            const muriscv_nn_dims *output_dims,
-                                            int8_t *output_data);
+                                                 const muriscv_nn_conv_params *conv_params,
+                                                 const muriscv_nn_per_channel_quant_params *quant_params,
+                                                 const muriscv_nn_dims *input_dims,
+                                                 const int8_t *input_data,
+                                                 const muriscv_nn_dims *filter_dims,
+                                                 const int8_t *filter_data,
+                                                 const muriscv_nn_dims *bias_dims,
+                                                 const int32_t *bias_data,
+                                                 const muriscv_nn_dims *output_dims,
+                                                 int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s4
@@ -123,9 +123,9 @@ muriscv_nn_status muriscv_nn_convolve_wrapper_s4(const muriscv_nn_context *ctx,
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size(const muriscv_nn_conv_params *conv_params,
-                                                const muriscv_nn_dims *input_dims,
-                                                const muriscv_nn_dims *filter_dims,
-                                                const muriscv_nn_dims *output_dims);
+                                                       const muriscv_nn_dims *input_dims,
+                                                       const muriscv_nn_dims *filter_dims,
+                                                       const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s4 for Arm(R) Helium Architecture case.
@@ -137,9 +137,9 @@ int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size(const muriscv_nn_conv_par
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size_mve(const muriscv_nn_conv_params *conv_params,
-                                                    const muriscv_nn_dims *input_dims,
-                                                    const muriscv_nn_dims *filter_dims,
-                                                    const muriscv_nn_dims *output_dims);
+                                                           const muriscv_nn_dims *input_dims,
+                                                           const muriscv_nn_dims *filter_dims,
+                                                           const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s4 for processors with DSP extension.
@@ -150,17 +150,17 @@ int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size_mve(const muriscv_nn_conv
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size_dsp(const muriscv_nn_conv_params *conv_params,
-                                                    const muriscv_nn_dims *input_dims,
-                                                    const muriscv_nn_dims *filter_dims,
-                                                    const muriscv_nn_dims *output_dims);
+                                                           const muriscv_nn_dims *input_dims,
+                                                           const muriscv_nn_dims *filter_dims,
+                                                           const muriscv_nn_dims *output_dims);
 
 /**
  * @brief s8 convolution layer wrapper function with the main purpose to call the optimal kernel available in
  *        muriscv-nn  to perform the convolution.
  *
  * @param[in, out] ctx            Function context that contains the additional buffer if required by the function.
- *                                muriscv_nn_convolve_wrapper_s8_get_buffer_size will return the buffer_size if required.
- *                                The caller is expected to clear the buffer, if applicable, for security reasons.
+ *                                muriscv_nn_convolve_wrapper_s8_get_buffer_size will return the buffer_size if
+ * required. The caller is expected to clear the buffer, if applicable, for security reasons.
  * @param[in]      conv_params    Convolution parameters (e.g. strides, dilations, pads,...).
  *                                Range of conv_params->input_offset  : [-127, 128]
  *                                Range of conv_params->output_offset : [-128, 127]
@@ -182,16 +182,16 @@ int32_t muriscv_nn_convolve_wrapper_s4_get_buffer_size_dsp(const muriscv_nn_conv
  *
  */
 muriscv_nn_status muriscv_nn_convolve_wrapper_s8(const muriscv_nn_context *ctx,
-                                            const muriscv_nn_conv_params *conv_params,
-                                            const muriscv_nn_per_channel_quant_params *quant_params,
-                                            const muriscv_nn_dims *input_dims,
-                                            const int8_t *input_data,
-                                            const muriscv_nn_dims *filter_dims,
-                                            const int8_t *filter_data,
-                                            const muriscv_nn_dims *bias_dims,
-                                            const int32_t *bias_data,
-                                            const muriscv_nn_dims *output_dims,
-                                            int8_t *output_data);
+                                                 const muriscv_nn_conv_params *conv_params,
+                                                 const muriscv_nn_per_channel_quant_params *quant_params,
+                                                 const muriscv_nn_dims *input_dims,
+                                                 const int8_t *input_data,
+                                                 const muriscv_nn_dims *filter_dims,
+                                                 const int8_t *filter_data,
+                                                 const muriscv_nn_dims *bias_dims,
+                                                 const int32_t *bias_data,
+                                                 const muriscv_nn_dims *output_dims,
+                                                 int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s8
@@ -208,9 +208,9 @@ muriscv_nn_status muriscv_nn_convolve_wrapper_s8(const muriscv_nn_context *ctx,
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size(const muriscv_nn_conv_params *conv_params,
-                                                const muriscv_nn_dims *input_dims,
-                                                const muriscv_nn_dims *filter_dims,
-                                                const muriscv_nn_dims *output_dims);
+                                                       const muriscv_nn_dims *input_dims,
+                                                       const muriscv_nn_dims *filter_dims,
+                                                       const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s8 for Arm(R) Helium Architecture case.
@@ -221,9 +221,9 @@ int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size(const muriscv_nn_conv_par
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size_mve(const muriscv_nn_conv_params *conv_params,
-                                                    const muriscv_nn_dims *input_dims,
-                                                    const muriscv_nn_dims *filter_dims,
-                                                    const muriscv_nn_dims *output_dims);
+                                                           const muriscv_nn_dims *input_dims,
+                                                           const muriscv_nn_dims *filter_dims,
+                                                           const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s8 for processors with DSP extension.
@@ -234,9 +234,9 @@ int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size_mve(const muriscv_nn_conv
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size_dsp(const muriscv_nn_conv_params *conv_params,
-                                                    const muriscv_nn_dims *input_dims,
-                                                    const muriscv_nn_dims *filter_dims,
-                                                    const muriscv_nn_dims *output_dims);
+                                                           const muriscv_nn_dims *input_dims,
+                                                           const muriscv_nn_dims *filter_dims,
+                                                           const muriscv_nn_dims *output_dims);
 
 /**
  * @brief s16 convolution layer wrapper function with the main purpose to call the optimal kernel available in
@@ -267,16 +267,16 @@ int32_t muriscv_nn_convolve_wrapper_s8_get_buffer_size_dsp(const muriscv_nn_conv
  *
  */
 muriscv_nn_status muriscv_nn_convolve_wrapper_s16(const muriscv_nn_context *ctx,
-                                             const muriscv_nn_conv_params *conv_params,
-                                             const muriscv_nn_per_channel_quant_params *quant_params,
-                                             const muriscv_nn_dims *input_dims,
-                                             const int16_t *input_data,
-                                             const muriscv_nn_dims *filter_dims,
-                                             const int8_t *filter_data,
-                                             const muriscv_nn_dims *bias_dims,
-                                             const muriscv_nn_bias_data *bias_data,
-                                             const muriscv_nn_dims *output_dims,
-                                             int16_t *output_data);
+                                                  const muriscv_nn_conv_params *conv_params,
+                                                  const muriscv_nn_per_channel_quant_params *quant_params,
+                                                  const muriscv_nn_dims *input_dims,
+                                                  const int16_t *input_data,
+                                                  const muriscv_nn_dims *filter_dims,
+                                                  const int8_t *filter_data,
+                                                  const muriscv_nn_dims *bias_dims,
+                                                  const muriscv_nn_bias_data *bias_data,
+                                                  const muriscv_nn_dims *output_dims,
+                                                  int16_t *output_data);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s16.
@@ -293,9 +293,9 @@ muriscv_nn_status muriscv_nn_convolve_wrapper_s16(const muriscv_nn_context *ctx,
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size(const muriscv_nn_conv_params *conv_params,
-                                                 const muriscv_nn_dims *input_dims,
-                                                 const muriscv_nn_dims *filter_dims,
-                                                 const muriscv_nn_dims *output_dims);
+                                                        const muriscv_nn_dims *input_dims,
+                                                        const muriscv_nn_dims *filter_dims,
+                                                        const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s16 for for processors with DSP extension.
@@ -306,9 +306,9 @@ int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size(const muriscv_nn_conv_pa
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size_dsp(const muriscv_nn_conv_params *conv_params,
-                                                     const muriscv_nn_dims *input_dims,
-                                                     const muriscv_nn_dims *filter_dims,
-                                                     const muriscv_nn_dims *output_dims);
+                                                            const muriscv_nn_dims *input_dims,
+                                                            const muriscv_nn_dims *filter_dims,
+                                                            const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_wrapper_s16 for Arm(R) Helium Architecture case.
@@ -319,9 +319,9 @@ int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size_dsp(const muriscv_nn_con
  *
  */
 int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size_mve(const muriscv_nn_conv_params *conv_params,
-                                                     const muriscv_nn_dims *input_dims,
-                                                     const muriscv_nn_dims *filter_dims,
-                                                     const muriscv_nn_dims *output_dims);
+                                                            const muriscv_nn_dims *input_dims,
+                                                            const muriscv_nn_dims *filter_dims,
+                                                            const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Basic s4 convolution function
@@ -351,16 +351,16 @@ int32_t muriscv_nn_convolve_wrapper_s16_get_buffer_size_mve(const muriscv_nn_con
  *
  */
 muriscv_nn_status muriscv_nn_convolve_s4(const muriscv_nn_context *ctx,
-                                    const muriscv_nn_conv_params *conv_params,
-                                    const muriscv_nn_per_channel_quant_params *quant_params,
-                                    const muriscv_nn_dims *input_dims,
-                                    const int8_t *input_data,
-                                    const muriscv_nn_dims *filter_dims,
-                                    const int8_t *filter_data,
-                                    const muriscv_nn_dims *bias_dims,
-                                    const int32_t *bias_data,
-                                    const muriscv_nn_dims *output_dims,
-                                    int8_t *output_data);
+                                         const muriscv_nn_conv_params *conv_params,
+                                         const muriscv_nn_per_channel_quant_params *quant_params,
+                                         const muriscv_nn_dims *input_dims,
+                                         const int8_t *input_data,
+                                         const muriscv_nn_dims *filter_dims,
+                                         const int8_t *filter_data,
+                                         const muriscv_nn_dims *bias_dims,
+                                         const int32_t *bias_data,
+                                         const muriscv_nn_dims *output_dims,
+                                         int8_t *output_data);
 
 /**
  * @brief Basic s4 convolution function with a requirement of even number of kernels.
@@ -392,16 +392,16 @@ muriscv_nn_status muriscv_nn_convolve_s4(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_even_s4(const muriscv_nn_context *ctx,
-                                         const muriscv_nn_conv_params *conv_params,
-                                         const muriscv_nn_per_channel_quant_params *quant_params,
-                                         const muriscv_nn_dims *input_dims,
-                                         const int8_t *input_data,
-                                         const muriscv_nn_dims *filter_dims,
-                                         const int8_t *filter_data,
-                                         const muriscv_nn_dims *bias_dims,
-                                         const int32_t *bias_data,
-                                         const muriscv_nn_dims *output_dims,
-                                         int8_t *output_data);
+                                              const muriscv_nn_conv_params *conv_params,
+                                              const muriscv_nn_per_channel_quant_params *quant_params,
+                                              const muriscv_nn_dims *input_dims,
+                                              const int8_t *input_data,
+                                              const muriscv_nn_dims *filter_dims,
+                                              const int8_t *filter_data,
+                                              const muriscv_nn_dims *bias_dims,
+                                              const int32_t *bias_data,
+                                              const muriscv_nn_dims *output_dims,
+                                              int8_t *output_data);
 
 /**
  * @brief Basic s8 convolution function
@@ -435,16 +435,16 @@ muriscv_nn_status muriscv_nn_convolve_even_s4(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_s8(const muriscv_nn_context *ctx,
-                                    const muriscv_nn_conv_params *conv_params,
-                                    const muriscv_nn_per_channel_quant_params *quant_params,
-                                    const muriscv_nn_dims *input_dims,
-                                    const int8_t *input_data,
-                                    const muriscv_nn_dims *filter_dims,
-                                    const int8_t *filter_data,
-                                    const muriscv_nn_dims *bias_dims,
-                                    const int32_t *bias_data,
-                                    const muriscv_nn_dims *output_dims,
-                                    int8_t *output_data);
+                                         const muriscv_nn_conv_params *conv_params,
+                                         const muriscv_nn_per_channel_quant_params *quant_params,
+                                         const muriscv_nn_dims *input_dims,
+                                         const int8_t *input_data,
+                                         const muriscv_nn_dims *filter_dims,
+                                         const int8_t *filter_data,
+                                         const muriscv_nn_dims *bias_dims,
+                                         const int32_t *bias_data,
+                                         const muriscv_nn_dims *output_dims,
+                                         int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for s4 convolution function
@@ -472,7 +472,8 @@ int32_t muriscv_nn_convolve_s8_get_buffer_size(const muriscv_nn_dims *input_dims
  * @brief Basic s8 transpose convolution function
  * @param[in, out] ctx                   Function context that contains the additional buffer if required by the
  *                                       function.
- *                                       muriscv_nn_transpose_conv_s8_get_buffer_size will return the buffer_size if required.
+ *                                       muriscv_nn_transpose_conv_s8_get_buffer_size will return the buffer_size if
+ required.
  *                                       The caller is expected to clear the buffer, if applicable, for security
  reasons.
  * @param[in, out] output_ctx            Temporary scratch buffer.
@@ -504,17 +505,17 @@ int32_t muriscv_nn_convolve_s8_get_buffer_size(const muriscv_nn_dims *input_dims
  *
  */
 muriscv_nn_status muriscv_nn_transpose_conv_s8(const muriscv_nn_context *ctx,
-                                          const muriscv_nn_context *output_ctx,
-                                          const muriscv_nn_transpose_conv_params *transpose_conv_params,
-                                          const muriscv_nn_per_channel_quant_params *quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input_data,
-                                          const muriscv_nn_dims *filter_dims,
-                                          const int8_t *filter_data,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias_data,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output_data);
+                                               const muriscv_nn_context *output_ctx,
+                                               const muriscv_nn_transpose_conv_params *transpose_conv_params,
+                                               const muriscv_nn_per_channel_quant_params *quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const muriscv_nn_dims *filter_dims,
+                                               const int8_t *filter_data,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for s8 transpose conv function
@@ -527,8 +528,8 @@ muriscv_nn_status muriscv_nn_transpose_conv_s8(const muriscv_nn_context *ctx,
  *
  */
 int32_t muriscv_nn_transpose_conv_s8_get_buffer_size(const muriscv_nn_dims *input_dims,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const muriscv_nn_dims *out_dims);
+                                                     const muriscv_nn_dims *filter_dims,
+                                                     const muriscv_nn_dims *out_dims);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_transpose_conv_s8() for processors with DSP extension.
@@ -539,8 +540,8 @@ int32_t muriscv_nn_transpose_conv_s8_get_buffer_size(const muriscv_nn_dims *inpu
  *
  */
 int32_t muriscv_nn_transpose_conv_s8_get_buffer_size_dsp(const muriscv_nn_dims *input_dims,
-                                                  const muriscv_nn_dims *filter_dims,
-                                                  const muriscv_nn_dims *out_dims);
+                                                         const muriscv_nn_dims *filter_dims,
+                                                         const muriscv_nn_dims *out_dims);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_transpose_conv_s8() for Arm(R) Helium Architecture case.
@@ -551,8 +552,8 @@ int32_t muriscv_nn_transpose_conv_s8_get_buffer_size_dsp(const muriscv_nn_dims *
  *
  */
 int32_t muriscv_nn_transpose_conv_s8_get_buffer_size_mve(const muriscv_nn_dims *input_dims,
-                                                  const muriscv_nn_dims *filter_dims,
-                                                  const muriscv_nn_dims *out_dims);
+                                                         const muriscv_nn_dims *filter_dims,
+                                                         const muriscv_nn_dims *out_dims);
 
 /**
  * @brief Basic s16 convolution function
@@ -585,16 +586,16 @@ int32_t muriscv_nn_transpose_conv_s8_get_buffer_size_mve(const muriscv_nn_dims *
  *
  */
 muriscv_nn_status muriscv_nn_convolve_s16(const muriscv_nn_context *ctx,
-                                     const muriscv_nn_conv_params *conv_params,
-                                     const muriscv_nn_per_channel_quant_params *quant_params,
-                                     const muriscv_nn_dims *input_dims,
-                                     const int16_t *input_data,
-                                     const muriscv_nn_dims *filter_dims,
-                                     const int8_t *filter_data,
-                                     const muriscv_nn_dims *bias_dims,
-                                     const muriscv_nn_bias_data *bias_data,
-                                     const muriscv_nn_dims *output_dims,
-                                     int16_t *output_data);
+                                          const muriscv_nn_conv_params *conv_params,
+                                          const muriscv_nn_per_channel_quant_params *quant_params,
+                                          const muriscv_nn_dims *input_dims,
+                                          const int16_t *input_data,
+                                          const muriscv_nn_dims *filter_dims,
+                                          const int8_t *filter_data,
+                                          const muriscv_nn_dims *bias_dims,
+                                          const muriscv_nn_bias_data *bias_data,
+                                          const muriscv_nn_dims *output_dims,
+                                          int16_t *output_data);
 
 /**
  * @brief Get the required buffer size for s16 convolution function
@@ -611,8 +612,8 @@ int32_t muriscv_nn_convolve_s16_get_buffer_size(const muriscv_nn_dims *input_dim
  * @brief Fast s4 version for 1x1 convolution (non-square shape)
  *
  * @param[in, out] ctx           Function context that contains the additional buffer if required by the function.
- *                               muriscv_nn_convolve_1x1_s4_fast_get_buffer_size will return the buffer_size if required.
- *                               The caller is expected to clear the buffer ,if applicable, for security reasons.
+ *                               muriscv_nn_convolve_1x1_s4_fast_get_buffer_size will return the buffer_size if
+ * required. The caller is expected to clear the buffer ,if applicable, for security reasons.
  * @param[in]      conv_params   Convolution parameters (e.g. strides, dilations, pads,...).
  *                               Range of conv_params->input_offset  : [-127, 128]
  *                               Range of conv_params->output_offset : [-128, 127]
@@ -639,16 +640,16 @@ int32_t muriscv_nn_convolve_s16_get_buffer_size(const muriscv_nn_dims *input_dim
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1x1_s4_fast(const muriscv_nn_context *ctx,
-                                             const muriscv_nn_conv_params *conv_params,
-                                             const muriscv_nn_per_channel_quant_params *quant_params,
-                                             const muriscv_nn_dims *input_dims,
-                                             const int8_t *input_data,
-                                             const muriscv_nn_dims *filter_dims,
-                                             const int8_t *filter_data,
-                                             const muriscv_nn_dims *bias_dims,
-                                             const int32_t *bias_data,
-                                             const muriscv_nn_dims *output_dims,
-                                             int8_t *output_data);
+                                                  const muriscv_nn_conv_params *conv_params,
+                                                  const muriscv_nn_per_channel_quant_params *quant_params,
+                                                  const muriscv_nn_dims *input_dims,
+                                                  const int8_t *input_data,
+                                                  const muriscv_nn_dims *filter_dims,
+                                                  const int8_t *filter_data,
+                                                  const muriscv_nn_dims *bias_dims,
+                                                  const int32_t *bias_data,
+                                                  const muriscv_nn_dims *output_dims,
+                                                  int8_t *output_data);
 
 /**
  * @brief s4 version for 1x1 convolution with support for non-unity stride values
@@ -679,23 +680,23 @@ muriscv_nn_status muriscv_nn_convolve_1x1_s4_fast(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1x1_s4(const muriscv_nn_context *ctx,
-                                        const muriscv_nn_conv_params *conv_params,
-                                        const muriscv_nn_per_channel_quant_params *quant_params,
-                                        const muriscv_nn_dims *input_dims,
-                                        const int8_t *input_data,
-                                        const muriscv_nn_dims *filter_dims,
-                                        const int8_t *filter_data,
-                                        const muriscv_nn_dims *bias_dims,
-                                        const int32_t *bias_data,
-                                        const muriscv_nn_dims *output_dims,
-                                        int8_t *output_data);
+                                             const muriscv_nn_conv_params *conv_params,
+                                             const muriscv_nn_per_channel_quant_params *quant_params,
+                                             const muriscv_nn_dims *input_dims,
+                                             const int8_t *input_data,
+                                             const muriscv_nn_dims *filter_dims,
+                                             const int8_t *filter_data,
+                                             const muriscv_nn_dims *bias_dims,
+                                             const int32_t *bias_data,
+                                             const muriscv_nn_dims *output_dims,
+                                             int8_t *output_data);
 
 /**
  * @brief Fast s8 version for 1x1 convolution (non-square shape)
  *
  * @param[in, out] ctx           Function context that contains the additional buffer if required by the function.
- *                               muriscv_nn_convolve_1x1_s8_fast_get_buffer_size will return the buffer_size if required.
- *                               The caller is expected to clear the buffer, if applicable, for security reasons.
+ *                               muriscv_nn_convolve_1x1_s8_fast_get_buffer_size will return the buffer_size if
+ * required. The caller is expected to clear the buffer, if applicable, for security reasons.
  * @param[in]      conv_params   Convolution parameters (e.g. strides, dilations, pads,...).
  *                               Range of conv_params->input_offset  : [-127, 128]
  *                               Range of conv_params->output_offset : [-128, 127]
@@ -722,16 +723,16 @@ muriscv_nn_status muriscv_nn_convolve_1x1_s4(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1x1_s8_fast(const muriscv_nn_context *ctx,
-                                             const muriscv_nn_conv_params *conv_params,
-                                             const muriscv_nn_per_channel_quant_params *quant_params,
-                                             const muriscv_nn_dims *input_dims,
-                                             const int8_t *input_data,
-                                             const muriscv_nn_dims *filter_dims,
-                                             const int8_t *filter_data,
-                                             const muriscv_nn_dims *bias_dims,
-                                             const int32_t *bias_data,
-                                             const muriscv_nn_dims *output_dims,
-                                             int8_t *output_data);
+                                                  const muriscv_nn_conv_params *conv_params,
+                                                  const muriscv_nn_per_channel_quant_params *quant_params,
+                                                  const muriscv_nn_dims *input_dims,
+                                                  const int8_t *input_data,
+                                                  const muriscv_nn_dims *filter_dims,
+                                                  const int8_t *filter_data,
+                                                  const muriscv_nn_dims *bias_dims,
+                                                  const int32_t *bias_data,
+                                                  const muriscv_nn_dims *output_dims,
+                                                  int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for muriscv_nn_convolve_1x1_s4_fast
@@ -780,16 +781,16 @@ int32_t muriscv_nn_convolve_1x1_s8_fast_get_buffer_size(const muriscv_nn_dims *i
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1x1_s8(const muriscv_nn_context *ctx,
-                                        const muriscv_nn_conv_params *conv_params,
-                                        const muriscv_nn_per_channel_quant_params *quant_params,
-                                        const muriscv_nn_dims *input_dims,
-                                        const int8_t *input_data,
-                                        const muriscv_nn_dims *filter_dims,
-                                        const int8_t *filter_data,
-                                        const muriscv_nn_dims *bias_dims,
-                                        const int32_t *bias_data,
-                                        const muriscv_nn_dims *output_dims,
-                                        int8_t *output_data);
+                                             const muriscv_nn_conv_params *conv_params,
+                                             const muriscv_nn_per_channel_quant_params *quant_params,
+                                             const muriscv_nn_dims *input_dims,
+                                             const int8_t *input_data,
+                                             const muriscv_nn_dims *filter_dims,
+                                             const int8_t *filter_data,
+                                             const muriscv_nn_dims *bias_dims,
+                                             const int32_t *bias_data,
+                                             const muriscv_nn_dims *output_dims,
+                                             int8_t *output_data);
 
 /**
  * @brief 1xn convolution
@@ -829,16 +830,16 @@ muriscv_nn_status muriscv_nn_convolve_1x1_s8(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1_x_n_s8(const muriscv_nn_context *ctx,
-                                          const muriscv_nn_conv_params *conv_params,
-                                          const muriscv_nn_per_channel_quant_params *quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input_data,
-                                          const muriscv_nn_dims *filter_dims,
-                                          const int8_t *filter_data,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias_data,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output_data);
+                                               const muriscv_nn_conv_params *conv_params,
+                                               const muriscv_nn_per_channel_quant_params *quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const muriscv_nn_dims *filter_dims,
+                                               const int8_t *filter_data,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output_data);
 
 /**
  * @brief 1xn convolution for s4 weights
@@ -877,16 +878,16 @@ muriscv_nn_status muriscv_nn_convolve_1_x_n_s8(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_convolve_1_x_n_s4(const muriscv_nn_context *ctx,
-                                          const muriscv_nn_conv_params *conv_params,
-                                          const muriscv_nn_per_channel_quant_params *quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input_data,
-                                          const muriscv_nn_dims *filter_dims,
-                                          const int8_t *filter_data,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias_data,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output_data);
+                                               const muriscv_nn_conv_params *conv_params,
+                                               const muriscv_nn_per_channel_quant_params *quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const muriscv_nn_dims *filter_dims,
+                                               const int8_t *filter_data,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output_data);
 
 /**
  * @brief Get the required additional buffer size for 1xn convolution
@@ -903,9 +904,9 @@ muriscv_nn_status muriscv_nn_convolve_1_x_n_s4(const muriscv_nn_context *ctx,
  *
  */
 int32_t muriscv_nn_convolve_1_x_n_s8_get_buffer_size(const muriscv_nn_conv_params *conv_params,
-                                              const muriscv_nn_dims *input_dims,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const muriscv_nn_dims *output_dims);
+                                                     const muriscv_nn_dims *input_dims,
+                                                     const muriscv_nn_dims *filter_dims,
+                                                     const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get the required additional buffer size for 1xn convolution
@@ -922,9 +923,9 @@ int32_t muriscv_nn_convolve_1_x_n_s8_get_buffer_size(const muriscv_nn_conv_param
  *
  */
 int32_t muriscv_nn_convolve_1_x_n_s4_get_buffer_size(const muriscv_nn_conv_params *conv_params,
-                                              const muriscv_nn_dims *input_dims,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const muriscv_nn_dims *output_dims);
+                                                     const muriscv_nn_dims *input_dims,
+                                                     const muriscv_nn_dims *filter_dims,
+                                                     const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Wrapper function to pick the right optimized s8 depthwise convolution function
@@ -963,16 +964,16 @@ int32_t muriscv_nn_convolve_1_x_n_s4_get_buffer_size(const muriscv_nn_conv_param
  * boundary.
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s8(const muriscv_nn_context *ctx,
-                                                  const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                  const muriscv_nn_per_channel_quant_params *quant_params,
-                                                  const muriscv_nn_dims *input_dims,
-                                                  const int8_t *input_data,
-                                                  const muriscv_nn_dims *filter_dims,
-                                                  const int8_t *filter_data,
-                                                  const muriscv_nn_dims *bias_dims,
-                                                  const int32_t *bias_data,
-                                                  const muriscv_nn_dims *output_dims,
-                                                  int8_t *output_data);
+                                                       const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                       const muriscv_nn_per_channel_quant_params *quant_params,
+                                                       const muriscv_nn_dims *input_dims,
+                                                       const int8_t *input_data,
+                                                       const muriscv_nn_dims *filter_dims,
+                                                       const int8_t *filter_data,
+                                                       const muriscv_nn_dims *bias_dims,
+                                                       const int32_t *bias_data,
+                                                       const muriscv_nn_dims *output_dims,
+                                                       int8_t *output_data);
 
 /**
  * @brief Wrapper function to pick the right optimized s4 depthwise convolution function
@@ -1006,16 +1007,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s8(const muriscv_nn_context 
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s4(const muriscv_nn_context *ctx,
-                                                  const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                  const muriscv_nn_per_channel_quant_params *quant_params,
-                                                  const muriscv_nn_dims *input_dims,
-                                                  const int8_t *input_data,
-                                                  const muriscv_nn_dims *filter_dims,
-                                                  const int8_t *filter_data,
-                                                  const muriscv_nn_dims *bias_dims,
-                                                  const int32_t *bias_data,
-                                                  const muriscv_nn_dims *output_dims,
-                                                  int8_t *output_data);
+                                                       const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                       const muriscv_nn_per_channel_quant_params *quant_params,
+                                                       const muriscv_nn_dims *input_dims,
+                                                       const int8_t *input_data,
+                                                       const muriscv_nn_dims *filter_dims,
+                                                       const int8_t *filter_data,
+                                                       const muriscv_nn_dims *bias_dims,
+                                                       const int32_t *bias_data,
+                                                       const muriscv_nn_dims *output_dims,
+                                                       int8_t *output_data);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s8()
@@ -1031,35 +1032,35 @@ muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s4(const muriscv_nn_context 
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                      const muriscv_nn_dims *input_dims,
-                                                      const muriscv_nn_dims *filter_dims,
-                                                      const muriscv_nn_dims *output_dims);
+                                                             const muriscv_nn_dims *input_dims,
+                                                             const muriscv_nn_dims *filter_dims,
+                                                             const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s8() for processors with DSP extension.
- *        Refer to muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s8() for processors with DSP
+ * extension. Refer to muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size_dsp(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                          const muriscv_nn_dims *input_dims,
-                                                          const muriscv_nn_dims *filter_dims,
-                                                          const muriscv_nn_dims *output_dims);
+                                                                 const muriscv_nn_dims *input_dims,
+                                                                 const muriscv_nn_dims *filter_dims,
+                                                                 const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s8() for Arm(R) Helium Architecture case.
- *        Refer to muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s8() for Arm(R) Helium
+ * Architecture case. Refer to muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size_mve(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                          const muriscv_nn_dims *input_dims,
-                                                          const muriscv_nn_dims *filter_dims,
-                                                          const muriscv_nn_dims *output_dims);
+                                                                 const muriscv_nn_dims *input_dims,
+                                                                 const muriscv_nn_dims *filter_dims,
+                                                                 const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s4()
@@ -1075,35 +1076,35 @@ int32_t muriscv_nn_depthwise_conv_wrapper_s8_get_buffer_size_mve(const muriscv_n
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                      const muriscv_nn_dims *input_dims,
-                                                      const muriscv_nn_dims *filter_dims,
-                                                      const muriscv_nn_dims *output_dims);
+                                                             const muriscv_nn_dims *input_dims,
+                                                             const muriscv_nn_dims *filter_dims,
+                                                             const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s4() for processors with DSP extension.
- *        Refer to muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s4() for processors with DSP
+ * extension. Refer to muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size_dsp(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                          const muriscv_nn_dims *input_dims,
-                                                          const muriscv_nn_dims *filter_dims,
-                                                          const muriscv_nn_dims *output_dims);
+                                                                 const muriscv_nn_dims *input_dims,
+                                                                 const muriscv_nn_dims *filter_dims,
+                                                                 const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s4() for Arm(R) Helium Architecture case.
- *        Refer to muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s4() for Arm(R) Helium
+ * Architecture case. Refer to muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size_mve(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                          const muriscv_nn_dims *input_dims,
-                                                          const muriscv_nn_dims *filter_dims,
-                                                          const muriscv_nn_dims *output_dims);
+                                                                 const muriscv_nn_dims *input_dims,
+                                                                 const muriscv_nn_dims *filter_dims,
+                                                                 const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Basic s8 depthwise convolution function that doesn't have any constraints on the input dimensions.
@@ -1135,16 +1136,16 @@ int32_t muriscv_nn_depthwise_conv_wrapper_s4_get_buffer_size_mve(const muriscv_n
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_s8(const muriscv_nn_context *ctx,
-                                          const muriscv_nn_dw_conv_params *dw_conv_params,
-                                          const muriscv_nn_per_channel_quant_params *quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input_data,
-                                          const muriscv_nn_dims *filter_dims,
-                                          const int8_t *filter_data,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias_data,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output_data);
+                                               const muriscv_nn_dw_conv_params *dw_conv_params,
+                                               const muriscv_nn_per_channel_quant_params *quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const muriscv_nn_dims *filter_dims,
+                                               const int8_t *filter_data,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output_data);
 
 /**
  * @brief Basic s4 depthwise convolution function that doesn't have any constraints on the input dimensions.
@@ -1177,16 +1178,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_s8(const muriscv_nn_context *ctx,
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_s4(const muriscv_nn_context *ctx,
-                                          const muriscv_nn_dw_conv_params *dw_conv_params,
-                                          const muriscv_nn_per_channel_quant_params *quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input,
-                                          const muriscv_nn_dims *filter_dims,
-                                          const int8_t *kernel,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output);
+                                               const muriscv_nn_dw_conv_params *dw_conv_params,
+                                               const muriscv_nn_per_channel_quant_params *quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input,
+                                               const muriscv_nn_dims *filter_dims,
+                                               const int8_t *kernel,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output);
 
 /**
  * @brief Basic s16 depthwise convolution function that doesn't have any constraints on the input dimensions.
@@ -1218,16 +1219,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_s4(const muriscv_nn_context *ctx,
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_s16(const muriscv_nn_context *ctx,
-                                           const muriscv_nn_dw_conv_params *dw_conv_params,
-                                           const muriscv_nn_per_channel_quant_params *quant_params,
-                                           const muriscv_nn_dims *input_dims,
-                                           const int16_t *input_data,
-                                           const muriscv_nn_dims *filter_dims,
-                                           const int8_t *filter_data,
-                                           const muriscv_nn_dims *bias_dims,
-                                           const int64_t *bias_data,
-                                           const muriscv_nn_dims *output_dims,
-                                           int16_t *output_data);
+                                                const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                const muriscv_nn_per_channel_quant_params *quant_params,
+                                                const muriscv_nn_dims *input_dims,
+                                                const int16_t *input_data,
+                                                const muriscv_nn_dims *filter_dims,
+                                                const int8_t *filter_data,
+                                                const muriscv_nn_dims *bias_dims,
+                                                const int64_t *bias_data,
+                                                const muriscv_nn_dims *output_dims,
+                                                int16_t *output_data);
 
 /**
  * @brief Wrapper function to pick the right optimized s16 depthwise convolution function
@@ -1263,16 +1264,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_s16(const muriscv_nn_context *ctx,
  *        -# muriscv_nn_depthwise_conv_fast_s16()  - Cortex-M CPUs with DSP extension only
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s16(const muriscv_nn_context *ctx,
-                                                   const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                   const muriscv_nn_per_channel_quant_params *quant_params,
-                                                   const muriscv_nn_dims *input_dims,
-                                                   const int16_t *input_data,
-                                                   const muriscv_nn_dims *filter_dims,
-                                                   const int8_t *filter_data,
-                                                   const muriscv_nn_dims *bias_dims,
-                                                   const int64_t *bias_data,
-                                                   const muriscv_nn_dims *output_dims,
-                                                   int16_t *output_data);
+                                                        const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                        const muriscv_nn_per_channel_quant_params *quant_params,
+                                                        const muriscv_nn_dims *input_dims,
+                                                        const int16_t *input_data,
+                                                        const muriscv_nn_dims *filter_dims,
+                                                        const int8_t *filter_data,
+                                                        const muriscv_nn_dims *bias_dims,
+                                                        const int64_t *bias_data,
+                                                        const muriscv_nn_dims *output_dims,
+                                                        int16_t *output_data);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s16()
@@ -1288,35 +1289,35 @@ muriscv_nn_status muriscv_nn_depthwise_conv_wrapper_s16(const muriscv_nn_context
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                       const muriscv_nn_dims *input_dims,
-                                                       const muriscv_nn_dims *filter_dims,
-                                                       const muriscv_nn_dims *output_dims);
+                                                              const muriscv_nn_dims *input_dims,
+                                                              const muriscv_nn_dims *filter_dims,
+                                                              const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s16() for processors with DSP extension.
- *        Refer to muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s16() for processors with DSP
+ * extension. Refer to muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size_dsp(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                           const muriscv_nn_dims *input_dims,
-                                                           const muriscv_nn_dims *filter_dims,
-                                                           const muriscv_nn_dims *output_dims);
+                                                                  const muriscv_nn_dims *input_dims,
+                                                                  const muriscv_nn_dims *filter_dims,
+                                                                  const muriscv_nn_dims *output_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s16() for Arm(R) Helium Architecture
- * case. Refer to muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_depthwise_conv_wrapper_s16() for Arm(R) Helium
+ * Architecture case. Refer to muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size().
  *
  */
 int32_t muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size_mve(const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                           const muriscv_nn_dims *input_dims,
-                                                           const muriscv_nn_dims *filter_dims,
-                                                           const muriscv_nn_dims *output_dims);
+                                                                  const muriscv_nn_dims *input_dims,
+                                                                  const muriscv_nn_dims *filter_dims,
+                                                                  const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Optimized s16 depthwise convolution function with constraint that in_channel equals out_channel.
@@ -1338,16 +1339,16 @@ int32_t muriscv_nn_depthwise_conv_wrapper_s16_get_buffer_size_mve(const muriscv_
  *
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_fast_s16(const muriscv_nn_context *ctx,
-                                                const muriscv_nn_dw_conv_params *dw_conv_params,
-                                                const muriscv_nn_per_channel_quant_params *quant_params,
-                                                const muriscv_nn_dims *input_dims,
-                                                const int16_t *input_data,
-                                                const muriscv_nn_dims *filter_dims,
-                                                const int8_t *filter_data,
-                                                const muriscv_nn_dims *bias_dims,
-                                                const int64_t *bias_data,
-                                                const muriscv_nn_dims *output_dims,
-                                                int16_t *output_data);
+                                                     const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                     const muriscv_nn_per_channel_quant_params *quant_params,
+                                                     const muriscv_nn_dims *input_dims,
+                                                     const int16_t *input_data,
+                                                     const muriscv_nn_dims *filter_dims,
+                                                     const int8_t *filter_data,
+                                                     const muriscv_nn_dims *bias_dims,
+                                                     const int64_t *bias_data,
+                                                     const muriscv_nn_dims *output_dims,
+                                                     int16_t *output_data);
 
 /**
  * @brief Get the required buffer size for optimized s16 depthwise convolution
@@ -1358,7 +1359,8 @@ muriscv_nn_status muriscv_nn_depthwise_conv_fast_s16(const muriscv_nn_context *c
  * @return          The function returns required buffer size in bytes
  *
  */
-int32_t muriscv_nn_depthwise_conv_fast_s16_get_buffer_size(const muriscv_nn_dims *input_dims, const muriscv_nn_dims *filter_dims);
+int32_t muriscv_nn_depthwise_conv_fast_s16_get_buffer_size(const muriscv_nn_dims *input_dims,
+                                                           const muriscv_nn_dims *filter_dims);
 
 /**
  * @brief Optimized s8 depthwise convolution function for 3x3 kernel size with some constraints on
@@ -1379,16 +1381,16 @@ int32_t muriscv_nn_depthwise_conv_fast_s16_get_buffer_size(const muriscv_nn_dims
  *
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_3x3_s8(const muriscv_nn_context *ctx,
-                                              const muriscv_nn_dw_conv_params *dw_conv_params,
-                                              const muriscv_nn_per_channel_quant_params *quant_params,
-                                              const muriscv_nn_dims *input_dims,
-                                              const int8_t *input_data,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const int8_t *filter_data,
-                                              const muriscv_nn_dims *bias_dims,
-                                              const int32_t *bias_data,
-                                              const muriscv_nn_dims *output_dims,
-                                              int8_t *output_data);
+                                                   const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                   const muriscv_nn_per_channel_quant_params *quant_params,
+                                                   const muriscv_nn_dims *input_dims,
+                                                   const int8_t *input_data,
+                                                   const muriscv_nn_dims *filter_dims,
+                                                   const int8_t *filter_data,
+                                                   const muriscv_nn_dims *bias_dims,
+                                                   const int32_t *bias_data,
+                                                   const muriscv_nn_dims *output_dims,
+                                                   int8_t *output_data);
 
 /**
  * @brief Optimized s8 depthwise convolution function with constraint that in_channel equals out_channel.
@@ -1413,16 +1415,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_3x3_s8(const muriscv_nn_context *ctx
  *
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_s8_opt(const muriscv_nn_context *ctx,
-                                              const muriscv_nn_dw_conv_params *dw_conv_params,
-                                              const muriscv_nn_per_channel_quant_params *quant_params,
-                                              const muriscv_nn_dims *input_dims,
-                                              const int8_t *input_data,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const int8_t *filter_data,
-                                              const muriscv_nn_dims *bias_dims,
-                                              const int32_t *bias_data,
-                                              const muriscv_nn_dims *output_dims,
-                                              int8_t *output_data);
+                                                   const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                   const muriscv_nn_per_channel_quant_params *quant_params,
+                                                   const muriscv_nn_dims *input_dims,
+                                                   const int8_t *input_data,
+                                                   const muriscv_nn_dims *filter_dims,
+                                                   const int8_t *filter_data,
+                                                   const muriscv_nn_dims *bias_dims,
+                                                   const int32_t *bias_data,
+                                                   const muriscv_nn_dims *output_dims,
+                                                   int8_t *output_data);
 
 /**
  * @brief Optimized s4 depthwise convolution function with constraint that in_channel equals out_channel.
@@ -1447,16 +1449,16 @@ muriscv_nn_status muriscv_nn_depthwise_conv_s8_opt(const muriscv_nn_context *ctx
  *
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_s4_opt(const muriscv_nn_context *ctx,
-                                              const muriscv_nn_dw_conv_params *dw_conv_params,
-                                              const muriscv_nn_per_channel_quant_params *quant_params,
-                                              const muriscv_nn_dims *input_dims,
-                                              const int8_t *input_data,
-                                              const muriscv_nn_dims *filter_dims,
-                                              const int8_t *filter_data,
-                                              const muriscv_nn_dims *bias_dims,
-                                              const int32_t *bias_data,
-                                              const muriscv_nn_dims *output_dims,
-                                              int8_t *output_data);
+                                                   const muriscv_nn_dw_conv_params *dw_conv_params,
+                                                   const muriscv_nn_per_channel_quant_params *quant_params,
+                                                   const muriscv_nn_dims *input_dims,
+                                                   const int8_t *input_data,
+                                                   const muriscv_nn_dims *filter_dims,
+                                                   const int8_t *filter_data,
+                                                   const muriscv_nn_dims *bias_dims,
+                                                   const int32_t *bias_data,
+                                                   const muriscv_nn_dims *output_dims,
+                                                   int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for optimized s8 depthwise convolution
@@ -1467,7 +1469,8 @@ muriscv_nn_status muriscv_nn_depthwise_conv_s4_opt(const muriscv_nn_context *ctx
  * @return          The function returns required buffer size in bytes
  *
  */
-int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size(const muriscv_nn_dims *input_dims, const muriscv_nn_dims *filter_dims);
+int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size(const muriscv_nn_dims *input_dims,
+                                                         const muriscv_nn_dims *filter_dims);
 
 /**
  * @brief Get the required buffer size for optimized s4 depthwise convolution
@@ -1478,7 +1481,8 @@ int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size(const muriscv_nn_dims *
  * @return          The function returns required buffer size in bytes
  *
  */
-int32_t muriscv_nn_depthwise_conv_s4_opt_get_buffer_size(const muriscv_nn_dims *input_dims, const muriscv_nn_dims *filter_dims);
+int32_t muriscv_nn_depthwise_conv_s4_opt_get_buffer_size(const muriscv_nn_dims *input_dims,
+                                                         const muriscv_nn_dims *filter_dims);
 
 /**
  * @defgroup FC Fully-connected Layer Functions
@@ -1530,16 +1534,16 @@ int32_t muriscv_nn_depthwise_conv_s4_opt_get_buffer_size(const muriscv_nn_dims *
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_fully_connected_s4(const muriscv_nn_context *ctx,
-                                           const muriscv_nn_fc_params *fc_params,
-                                           const muriscv_nn_per_tensor_quant_params *quant_params,
-                                           const muriscv_nn_dims *input_dims,
-                                           const int8_t *input_data,
-                                           const muriscv_nn_dims *filter_dims,
-                                           const int8_t *filter_data,
-                                           const muriscv_nn_dims *bias_dims,
-                                           const int32_t *bias_data,
-                                           const muriscv_nn_dims *output_dims,
-                                           int8_t *output_data);
+                                                const muriscv_nn_fc_params *fc_params,
+                                                const muriscv_nn_per_tensor_quant_params *quant_params,
+                                                const muriscv_nn_dims *input_dims,
+                                                const int8_t *input_data,
+                                                const muriscv_nn_dims *filter_dims,
+                                                const int8_t *filter_data,
+                                                const muriscv_nn_dims *bias_dims,
+                                                const int32_t *bias_data,
+                                                const muriscv_nn_dims *output_dims,
+                                                int8_t *output_data);
 
 /**
  * @brief Basic s8 Fully Connected function.
@@ -1580,16 +1584,16 @@ muriscv_nn_status muriscv_nn_fully_connected_s4(const muriscv_nn_context *ctx,
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_fully_connected_s8(const muriscv_nn_context *ctx,
-                                           const muriscv_nn_fc_params *fc_params,
-                                           const muriscv_nn_per_tensor_quant_params *quant_params,
-                                           const muriscv_nn_dims *input_dims,
-                                           const int8_t *input_data,
-                                           const muriscv_nn_dims *filter_dims,
-                                           const int8_t *filter_data,
-                                           const muriscv_nn_dims *bias_dims,
-                                           const int32_t *bias_data,
-                                           const muriscv_nn_dims *output_dims,
-                                           int8_t *output_data);
+                                                const muriscv_nn_fc_params *fc_params,
+                                                const muriscv_nn_per_tensor_quant_params *quant_params,
+                                                const muriscv_nn_dims *input_dims,
+                                                const int8_t *input_data,
+                                                const muriscv_nn_dims *filter_dims,
+                                                const int8_t *filter_data,
+                                                const muriscv_nn_dims *bias_dims,
+                                                const int32_t *bias_data,
+                                                const muriscv_nn_dims *output_dims,
+                                                int8_t *output_data);
 
 /**
  * @brief Basic s8 Fully Connected function using per channel quantization.
@@ -1630,16 +1634,16 @@ muriscv_nn_status muriscv_nn_fully_connected_s8(const muriscv_nn_context *ctx,
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_fully_connected_per_channel_s8(const muriscv_nn_context *ctx,
-                                                       const muriscv_nn_fc_params *fc_params,
-                                                       const muriscv_nn_per_channel_quant_params *quant_params,
-                                                       const muriscv_nn_dims *input_dims,
-                                                       const int8_t *input_data,
-                                                       const muriscv_nn_dims *filter_dims,
-                                                       const int8_t *filter_data,
-                                                       const muriscv_nn_dims *bias_dims,
-                                                       const int32_t *bias_data,
-                                                       const muriscv_nn_dims *output_dims,
-                                                       int8_t *output_data);
+                                                            const muriscv_nn_fc_params *fc_params,
+                                                            const muriscv_nn_per_channel_quant_params *quant_params,
+                                                            const muriscv_nn_dims *input_dims,
+                                                            const int8_t *input_data,
+                                                            const muriscv_nn_dims *filter_dims,
+                                                            const int8_t *filter_data,
+                                                            const muriscv_nn_dims *bias_dims,
+                                                            const int32_t *bias_data,
+                                                            const muriscv_nn_dims *output_dims,
+                                                            int8_t *output_data);
 
 /**
  * @brief s8 Fully Connected layer wrapper function
@@ -1680,16 +1684,16 @@ muriscv_nn_status muriscv_nn_fully_connected_per_channel_s8(const muriscv_nn_con
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_fully_connected_wrapper_s8(const muriscv_nn_context *ctx,
-                                                   const muriscv_nn_fc_params *fc_params,
-                                                   const muriscv_nn_quant_params *quant_params,
-                                                   const muriscv_nn_dims *input_dims,
-                                                   const int8_t *input_data,
-                                                   const muriscv_nn_dims *filter_dims,
-                                                   const int8_t *filter_data,
-                                                   const muriscv_nn_dims *bias_dims,
-                                                   const int32_t *bias_data,
-                                                   const muriscv_nn_dims *output_dims,
-                                                   int8_t *output_data);
+                                                        const muriscv_nn_fc_params *fc_params,
+                                                        const muriscv_nn_quant_params *quant_params,
+                                                        const muriscv_nn_dims *input_dims,
+                                                        const int8_t *input_data,
+                                                        const muriscv_nn_dims *filter_dims,
+                                                        const int8_t *filter_data,
+                                                        const muriscv_nn_dims *bias_dims,
+                                                        const int32_t *bias_data,
+                                                        const muriscv_nn_dims *output_dims,
+                                                        int8_t *output_data);
 
 /**
  * @brief Calculate the sum of each row in vector_data, multiply by lhs_offset and optionally add s32 bias_data.
@@ -1704,12 +1708,12 @@ muriscv_nn_status muriscv_nn_fully_connected_wrapper_s8(const muriscv_nn_context
  *                         <code>MURISCV_NN_SUCCESS</code> - Successful operation
  */
 muriscv_nn_status muriscv_nn_vector_sum_s8(int32_t *vector_sum_buf,
-                                      const int32_t vector_cols,
-                                      const int32_t vector_rows,
-                                      const int8_t *vector_data,
-                                      const int32_t lhs_offset,
-                                      const int32_t rhs_offset,
-                                      const int32_t *bias_data);
+                                           const int32_t vector_cols,
+                                           const int32_t vector_rows,
+                                           const int8_t *vector_data,
+                                           const int32_t lhs_offset,
+                                           const int32_t rhs_offset,
+                                           const int32_t *bias_data);
 
 /**
  * @brief Calculate the sum of each row in vector_data, multiply by lhs_offset and optionally add s64 bias_data.
@@ -1723,11 +1727,11 @@ muriscv_nn_status muriscv_nn_vector_sum_s8(int32_t *vector_sum_buf,
  *                         <code>MURISCV_NN_SUCCESS</code> - Successful operation
  */
 muriscv_nn_status muriscv_nn_vector_sum_s8_s64(int64_t *vector_sum_buf,
-                                          const int32_t vector_cols,
-                                          const int32_t vector_rows,
-                                          const int8_t *vector_data,
-                                          const int32_t lhs_offset,
-                                          const int64_t *bias_data);
+                                               const int32_t vector_cols,
+                                               const int32_t vector_rows,
+                                               const int8_t *vector_data,
+                                               const int32_t lhs_offset,
+                                               const int64_t *bias_data);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_fully_connected_s8().
@@ -1794,16 +1798,16 @@ int32_t muriscv_nn_fully_connected_s8_get_buffer_size_mve(const muriscv_nn_dims 
  *    - Supported framework: TensorFlow Lite
  */
 muriscv_nn_status muriscv_nn_fully_connected_s16(const muriscv_nn_context *ctx,
-                                            const muriscv_nn_fc_params *fc_params,
-                                            const muriscv_nn_per_tensor_quant_params *quant_params,
-                                            const muriscv_nn_dims *input_dims,
-                                            const int16_t *input_data,
-                                            const muriscv_nn_dims *filter_dims,
-                                            const int8_t *filter_data,
-                                            const muriscv_nn_dims *bias_dims,
-                                            const int64_t *bias_data,
-                                            const muriscv_nn_dims *output_dims,
-                                            int16_t *output_data);
+                                                 const muriscv_nn_fc_params *fc_params,
+                                                 const muriscv_nn_per_tensor_quant_params *quant_params,
+                                                 const muriscv_nn_dims *input_dims,
+                                                 const int16_t *input_data,
+                                                 const muriscv_nn_dims *filter_dims,
+                                                 const int8_t *filter_data,
+                                                 const muriscv_nn_dims *bias_dims,
+                                                 const int64_t *bias_data,
+                                                 const muriscv_nn_dims *output_dims,
+                                                 int16_t *output_data);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_fully_connected_s16().
@@ -1824,8 +1828,8 @@ int32_t muriscv_nn_fully_connected_s16_get_buffer_size(const muriscv_nn_dims *fi
 int32_t muriscv_nn_fully_connected_s16_get_buffer_size_dsp(const muriscv_nn_dims *filter_dims);
 
 /**
- * @brief Get size of additional buffer required by muriscv_nn_fully_connected_s16() for Arm(R) Helium Architecture case.
- *        Refer to muriscv_nn_fully_connected_s16_get_buffer_size() for function argument details.
+ * @brief Get size of additional buffer required by muriscv_nn_fully_connected_s16() for Arm(R) Helium Architecture
+ * case. Refer to muriscv_nn_fully_connected_s16_get_buffer_size() for function argument details.
  *
  * @note       Intended for compilation on Host. If compiling for an Arm target, use
  *             muriscv_nn_fully_connected_s16_get_buffer_size().
@@ -1861,21 +1865,21 @@ int32_t muriscv_nn_fully_connected_s16_get_buffer_size_mve(const muriscv_nn_dims
  * @return          The function returns    MURISCV_NN_SUCCESS
  */
 muriscv_nn_status muriscv_nn_elementwise_add_s8(const int8_t *input_1_vect,
-                                           const int8_t *input_2_vect,
-                                           const int32_t input_1_offset,
-                                           const int32_t input_1_mult,
-                                           const int32_t input_1_shift,
-                                           const int32_t input_2_offset,
-                                           const int32_t input_2_mult,
-                                           const int32_t input_2_shift,
-                                           const int32_t left_shift,
-                                           int8_t *output,
-                                           const int32_t out_offset,
-                                           const int32_t out_mult,
-                                           const int32_t out_shift,
-                                           const int32_t out_activation_min,
-                                           const int32_t out_activation_max,
-                                           const int32_t block_size);
+                                                const int8_t *input_2_vect,
+                                                const int32_t input_1_offset,
+                                                const int32_t input_1_mult,
+                                                const int32_t input_1_shift,
+                                                const int32_t input_2_offset,
+                                                const int32_t input_2_mult,
+                                                const int32_t input_2_shift,
+                                                const int32_t left_shift,
+                                                int8_t *output,
+                                                const int32_t out_offset,
+                                                const int32_t out_mult,
+                                                const int32_t out_shift,
+                                                const int32_t out_activation_min,
+                                                const int32_t out_activation_max,
+                                                const int32_t block_size);
 
 /**
  * @brief s16 elementwise add of two vectors
@@ -1898,21 +1902,21 @@ muriscv_nn_status muriscv_nn_elementwise_add_s8(const int8_t *input_1_vect,
  * @return          The function returns  MURISCV_NN_SUCCESS
  */
 muriscv_nn_status muriscv_nn_elementwise_add_s16(const int16_t *input_1_vect,
-                                            const int16_t *input_2_vect,
-                                            const int32_t input_1_offset,
-                                            const int32_t input_1_mult,
-                                            const int32_t input_1_shift,
-                                            const int32_t input_2_offset,
-                                            const int32_t input_2_mult,
-                                            const int32_t input_2_shift,
-                                            const int32_t left_shift,
-                                            int16_t *output,
-                                            const int32_t out_offset,
-                                            const int32_t out_mult,
-                                            const int32_t out_shift,
-                                            const int32_t out_activation_min,
-                                            const int32_t out_activation_max,
-                                            const int32_t block_size);
+                                                 const int16_t *input_2_vect,
+                                                 const int32_t input_1_offset,
+                                                 const int32_t input_1_mult,
+                                                 const int32_t input_1_shift,
+                                                 const int32_t input_2_offset,
+                                                 const int32_t input_2_mult,
+                                                 const int32_t input_2_shift,
+                                                 const int32_t left_shift,
+                                                 int16_t *output,
+                                                 const int32_t out_offset,
+                                                 const int32_t out_mult,
+                                                 const int32_t out_shift,
+                                                 const int32_t out_activation_min,
+                                                 const int32_t out_activation_max,
+                                                 const int32_t block_size);
 
 /**
  * @brief s8 elementwise multiplication
@@ -1932,16 +1936,16 @@ muriscv_nn_status muriscv_nn_elementwise_add_s16(const int16_t *input_1_vect,
  * @details   Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_elementwise_mul_s8(const int8_t *input_1_vect,
-                                           const int8_t *input_2_vect,
-                                           const int32_t input_1_offset,
-                                           const int32_t input_2_offset,
-                                           int8_t *output,
-                                           const int32_t out_offset,
-                                           const int32_t out_mult,
-                                           const int32_t out_shift,
-                                           const int32_t out_activation_min,
-                                           const int32_t out_activation_max,
-                                           const int32_t block_size);
+                                                const int8_t *input_2_vect,
+                                                const int32_t input_1_offset,
+                                                const int32_t input_2_offset,
+                                                int8_t *output,
+                                                const int32_t out_offset,
+                                                const int32_t out_mult,
+                                                const int32_t out_shift,
+                                                const int32_t out_activation_min,
+                                                const int32_t out_activation_max,
+                                                const int32_t block_size);
 
 /**
  * @brief s16 elementwise multiplication
@@ -1961,16 +1965,16 @@ muriscv_nn_status muriscv_nn_elementwise_mul_s8(const int8_t *input_1_vect,
  * @details   Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_elementwise_mul_s16(const int16_t *input_1_vect,
-                                            const int16_t *input_2_vect,
-                                            const int32_t input_1_offset,
-                                            const int32_t input_2_offset,
-                                            int16_t *output,
-                                            const int32_t out_offset,
-                                            const int32_t out_mult,
-                                            const int32_t out_shift,
-                                            const int32_t out_activation_min,
-                                            const int32_t out_activation_max,
-                                            const int32_t block_size);
+                                                 const int16_t *input_2_vect,
+                                                 const int32_t input_1_offset,
+                                                 const int32_t input_2_offset,
+                                                 int16_t *output,
+                                                 const int32_t out_offset,
+                                                 const int32_t out_mult,
+                                                 const int32_t out_shift,
+                                                 const int32_t out_activation_min,
+                                                 const int32_t out_activation_max,
+                                                 const int32_t block_size);
 
 /**
  * @defgroup Acti Activation Functions
@@ -2016,10 +2020,10 @@ void muriscv_nn_relu_q15(int16_t *data, uint16_t size);
  * functions
  */
 muriscv_nn_status muriscv_nn_activation_s16(const int16_t *input,
-                                          int16_t *output,
-                                          const int32_t size,
-                                          const int32_t left_shift,
-                                          const muriscv_nn_activation_type type);
+                                            int16_t *output,
+                                            const int32_t size,
+                                            const int32_t left_shift,
+                                            const muriscv_nn_activation_type type);
 
 /**
  * @defgroup Pooling Pooling Functions
@@ -2055,12 +2059,12 @@ muriscv_nn_status muriscv_nn_activation_s16(const int16_t *input,
  *
  */
 muriscv_nn_status muriscv_nn_avgpool_s8(const muriscv_nn_context *ctx,
-                                   const muriscv_nn_pool_params *pool_params,
-                                   const muriscv_nn_dims *input_dims,
-                                   const int8_t *input_data,
-                                   const muriscv_nn_dims *filter_dims,
-                                   const muriscv_nn_dims *output_dims,
-                                   int8_t *output_data);
+                                        const muriscv_nn_pool_params *pool_params,
+                                        const muriscv_nn_dims *input_dims,
+                                        const int8_t *input_data,
+                                        const muriscv_nn_dims *filter_dims,
+                                        const muriscv_nn_dims *output_dims,
+                                        int8_t *output_data);
 
 /**
  * @brief Get the required buffer size for S8 average pooling function
@@ -2118,12 +2122,12 @@ int32_t muriscv_nn_avgpool_s8_get_buffer_size_mve(const int dim_dst_width, const
  *
  */
 muriscv_nn_status muriscv_nn_avgpool_s16(const muriscv_nn_context *ctx,
-                                    const muriscv_nn_pool_params *pool_params,
-                                    const muriscv_nn_dims *input_dims,
-                                    const int16_t *input_data,
-                                    const muriscv_nn_dims *filter_dims,
-                                    const muriscv_nn_dims *output_dims,
-                                    int16_t *output_data);
+                                         const muriscv_nn_pool_params *pool_params,
+                                         const muriscv_nn_dims *input_dims,
+                                         const int16_t *input_data,
+                                         const muriscv_nn_dims *filter_dims,
+                                         const muriscv_nn_dims *output_dims,
+                                         int16_t *output_data);
 
 /**
  * @brief Get the required buffer size for S16 average pooling function
@@ -2182,12 +2186,12 @@ int32_t muriscv_nn_avgpool_s16_get_buffer_size_mve(const int dim_dst_width, cons
  *
  */
 muriscv_nn_status muriscv_nn_max_pool_s8(const muriscv_nn_context *ctx,
-                                    const muriscv_nn_pool_params *pool_params,
-                                    const muriscv_nn_dims *input_dims,
-                                    const int8_t *input_data,
-                                    const muriscv_nn_dims *filter_dims,
-                                    const muriscv_nn_dims *output_dims,
-                                    int8_t *output_data);
+                                         const muriscv_nn_pool_params *pool_params,
+                                         const muriscv_nn_dims *input_dims,
+                                         const int8_t *input_data,
+                                         const muriscv_nn_dims *filter_dims,
+                                         const muriscv_nn_dims *output_dims,
+                                         int8_t *output_data);
 
 /**
  * @brief s16 max pooling function.
@@ -2217,12 +2221,12 @@ muriscv_nn_status muriscv_nn_max_pool_s8(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_max_pool_s16(const muriscv_nn_context *ctx,
-                                     const muriscv_nn_pool_params *pool_params,
-                                     const muriscv_nn_dims *input_dims,
-                                     const int16_t *src,
-                                     const muriscv_nn_dims *filter_dims,
-                                     const muriscv_nn_dims *output_dims,
-                                     int16_t *dst);
+                                          const muriscv_nn_pool_params *pool_params,
+                                          const muriscv_nn_dims *input_dims,
+                                          const int16_t *src,
+                                          const muriscv_nn_dims *filter_dims,
+                                          const muriscv_nn_dims *output_dims,
+                                          int16_t *dst);
 
 /**
  * @defgroup Softmax Softmax Functions
@@ -2245,12 +2249,12 @@ muriscv_nn_status muriscv_nn_max_pool_s16(const muriscv_nn_context *ctx,
  *
  */
 void muriscv_nn_softmax_s8(const int8_t *input,
-                    const int32_t num_rows,
-                    const int32_t row_size,
-                    const int32_t mult,
-                    const int32_t shift,
-                    const int32_t diff_min,
-                    int8_t *output);
+                           const int32_t num_rows,
+                           const int32_t row_size,
+                           const int32_t mult,
+                           const int32_t shift,
+                           const int32_t diff_min,
+                           int8_t *output);
 
 /**
  * @brief S8 to s16 softmax function
@@ -2267,12 +2271,12 @@ void muriscv_nn_softmax_s8(const int8_t *input,
  *
  */
 void muriscv_nn_softmax_s8_s16(const int8_t *input,
-                        const int32_t num_rows,
-                        const int32_t row_size,
-                        const int32_t mult,
-                        const int32_t shift,
-                        const int32_t diff_min,
-                        int16_t *output);
+                               const int32_t num_rows,
+                               const int32_t row_size,
+                               const int32_t mult,
+                               const int32_t shift,
+                               const int32_t diff_min,
+                               int16_t *output);
 
 /**
  * @brief S16 softmax function
@@ -2296,12 +2300,12 @@ void muriscv_nn_softmax_s8_s16(const int8_t *input,
  *
  */
 muriscv_nn_status muriscv_nn_softmax_s16(const int16_t *input,
-                                    const int32_t num_rows,
-                                    const int32_t row_size,
-                                    const int32_t mult,
-                                    const int32_t shift,
-                                    const muriscv_nn_softmax_lut_s16 *softmax_params,
-                                    int16_t *output);
+                                         const int32_t num_rows,
+                                         const int32_t row_size,
+                                         const int32_t mult,
+                                         const int32_t shift,
+                                         const muriscv_nn_softmax_lut_s16 *softmax_params,
+                                         int16_t *output);
 
 /**
  * @brief U8 softmax function
@@ -2319,12 +2323,12 @@ muriscv_nn_status muriscv_nn_softmax_s16(const int16_t *input,
  */
 
 void muriscv_nn_softmax_u8(const uint8_t *input,
-                    const int32_t num_rows,
-                    const int32_t row_size,
-                    const int32_t mult,
-                    const int32_t shift,
-                    const int32_t diff_min,
-                    uint8_t *output);
+                           const int32_t num_rows,
+                           const int32_t row_size,
+                           const int32_t mult,
+                           const int32_t shift,
+                           const int32_t diff_min,
+                           uint8_t *output);
 
 /**
  * @defgroup Reshape Reshape Functions
@@ -2365,10 +2369,10 @@ void muriscv_nn_reshape_s8(const int8_t *input, int8_t *output, const uint32_t t
  *
  */
 muriscv_nn_status muriscv_nn_transpose_s8(const int8_t *input_data,
-                                     int8_t *const output_data,
-                                     const muriscv_nn_dims *const input_dims,
-                                     const muriscv_nn_dims *const output_dims,
-                                     const muriscv_nn_transpose_params *const transpose_params);
+                                          int8_t *const output_data,
+                                          const muriscv_nn_dims *const input_dims,
+                                          const muriscv_nn_dims *const output_dims,
+                                          const muriscv_nn_transpose_params *const transpose_params);
 
 /**
  * @defgroup Concatenation Concatenation Functions
@@ -2414,13 +2418,13 @@ muriscv_nn_status muriscv_nn_transpose_s8(const int8_t *input_data,
  *
  */
 void muriscv_nn_concatenation_s8_x(const int8_t *input,
-                            const uint16_t input_x,
-                            const uint16_t input_y,
-                            const uint16_t input_z,
-                            const uint16_t input_w,
-                            int8_t *output,
-                            const uint16_t output_x,
-                            const uint32_t offset_x);
+                                   const uint16_t input_x,
+                                   const uint16_t input_y,
+                                   const uint16_t input_z,
+                                   const uint16_t input_w,
+                                   int8_t *output,
+                                   const uint16_t output_x,
+                                   const uint32_t offset_x);
 
 /**
  * @brief int8/uint8 concatenation function to be used for concatenating N-tensors along the Y axis
@@ -2461,13 +2465,13 @@ void muriscv_nn_concatenation_s8_x(const int8_t *input,
  *
  */
 void muriscv_nn_concatenation_s8_y(const int8_t *input,
-                            const uint16_t input_x,
-                            const uint16_t input_y,
-                            const uint16_t input_z,
-                            const uint16_t input_w,
-                            int8_t *output,
-                            const uint16_t output_y,
-                            const uint32_t offset_y);
+                                   const uint16_t input_x,
+                                   const uint16_t input_y,
+                                   const uint16_t input_z,
+                                   const uint16_t input_w,
+                                   int8_t *output,
+                                   const uint16_t output_y,
+                                   const uint32_t offset_y);
 
 /**
  * @brief int8/uint8 concatenation function to be used for concatenating N-tensors along the Z axis
@@ -2508,13 +2512,13 @@ void muriscv_nn_concatenation_s8_y(const int8_t *input,
  *
  */
 void muriscv_nn_concatenation_s8_z(const int8_t *input,
-                            const uint16_t input_x,
-                            const uint16_t input_y,
-                            const uint16_t input_z,
-                            const uint16_t input_w,
-                            int8_t *output,
-                            const uint16_t output_z,
-                            const uint32_t offset_z);
+                                   const uint16_t input_x,
+                                   const uint16_t input_y,
+                                   const uint16_t input_z,
+                                   const uint16_t input_w,
+                                   int8_t *output,
+                                   const uint16_t output_z,
+                                   const uint32_t offset_z);
 
 /**
  * @brief int8/uint8 concatenation function to be used for concatenating N-tensors along the W axis (Batch size)
@@ -2551,12 +2555,12 @@ void muriscv_nn_concatenation_s8_z(const int8_t *input,
  *
  */
 void muriscv_nn_concatenation_s8_w(const int8_t *input,
-                            const uint16_t input_x,
-                            const uint16_t input_y,
-                            const uint16_t input_z,
-                            const uint16_t input_w,
-                            int8_t *output,
-                            const uint32_t offset_w);
+                                   const uint16_t input_x,
+                                   const uint16_t input_y,
+                                   const uint16_t input_z,
+                                   const uint16_t input_w,
+                                   int8_t *output,
+                                   const uint32_t offset_w);
 /**
  * @defgroup SVDF SVDF Functions
  *
@@ -2567,9 +2571,9 @@ void muriscv_nn_concatenation_s8_w(const int8_t *input,
  *
  * @param[in, out] ctx                Function context (e.g. temporary buffer). Check the function
  *                                    definition file to see if an additional buffer is required.
- *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the buffer
- *                                    size if an additional buffer is required.
- *                                    The caller is expected to clear the buffer, if applicable, for security reasons.
+ *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the
+ * buffer size if an additional buffer is required. The caller is expected to clear the buffer, if applicable, for
+ * security reasons.
  * @param[in]   input_ctx             Temporary scratch buffer
  *                                    The caller is expected to clear the buffer, if applicable, for security reasons.
  * @param[in]   output_ctx            Temporary output scratch buffer
@@ -2600,23 +2604,23 @@ void muriscv_nn_concatenation_s8_w(const int8_t *input,
  *    1. Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_svdf_s8(const muriscv_nn_context *ctx,
-                                const muriscv_nn_context *input_ctx,
-                                const muriscv_nn_context *output_ctx,
-                                const muriscv_nn_svdf_params *svdf_params,
-                                const muriscv_nn_per_tensor_quant_params *input_quant_params,
-                                const muriscv_nn_per_tensor_quant_params *output_quant_params,
-                                const muriscv_nn_dims *input_dims,
-                                const int8_t *input_data,
-                                const muriscv_nn_dims *state_dims,
-                                int8_t *state_data,
-                                const muriscv_nn_dims *weights_feature_dims,
-                                const int8_t *weights_feature_data,
-                                const muriscv_nn_dims *weights_time_dims,
-                                const int8_t *weights_time_data,
-                                const muriscv_nn_dims *bias_dims,
-                                const int32_t *bias_data,
-                                const muriscv_nn_dims *output_dims,
-                                int8_t *output_data);
+                                     const muriscv_nn_context *input_ctx,
+                                     const muriscv_nn_context *output_ctx,
+                                     const muriscv_nn_svdf_params *svdf_params,
+                                     const muriscv_nn_per_tensor_quant_params *input_quant_params,
+                                     const muriscv_nn_per_tensor_quant_params *output_quant_params,
+                                     const muriscv_nn_dims *input_dims,
+                                     const int8_t *input_data,
+                                     const muriscv_nn_dims *state_dims,
+                                     int8_t *state_data,
+                                     const muriscv_nn_dims *weights_feature_dims,
+                                     const int8_t *weights_feature_data,
+                                     const muriscv_nn_dims *weights_time_dims,
+                                     const int8_t *weights_time_data,
+                                     const muriscv_nn_dims *bias_dims,
+                                     const int32_t *bias_data,
+                                     const muriscv_nn_dims *output_dims,
+                                     int8_t *output_data);
 
 /**
  * @brief s8 SVDF function with 16 bit state tensor and 16 bit time weights
@@ -2649,22 +2653,22 @@ muriscv_nn_status muriscv_nn_svdf_s8(const muriscv_nn_context *ctx,
  *    1. Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_svdf_state_s16_s8(const muriscv_nn_context *input_ctx,
-                                          const muriscv_nn_context *output_ctx,
-                                          const muriscv_nn_svdf_params *svdf_params,
-                                          const muriscv_nn_per_tensor_quant_params *input_quant_params,
-                                          const muriscv_nn_per_tensor_quant_params *output_quant_params,
-                                          const muriscv_nn_dims *input_dims,
-                                          const int8_t *input_data,
-                                          const muriscv_nn_dims *state_dims,
-                                          int16_t *state_data,
-                                          const muriscv_nn_dims *weights_feature_dims,
-                                          const int8_t *weights_feature_data,
-                                          const muriscv_nn_dims *weights_time_dims,
-                                          const int16_t *weights_time_data,
-                                          const muriscv_nn_dims *bias_dims,
-                                          const int32_t *bias_data,
-                                          const muriscv_nn_dims *output_dims,
-                                          int8_t *output_data);
+                                               const muriscv_nn_context *output_ctx,
+                                               const muriscv_nn_svdf_params *svdf_params,
+                                               const muriscv_nn_per_tensor_quant_params *input_quant_params,
+                                               const muriscv_nn_per_tensor_quant_params *output_quant_params,
+                                               const muriscv_nn_dims *input_dims,
+                                               const int8_t *input_data,
+                                               const muriscv_nn_dims *state_dims,
+                                               int16_t *state_data,
+                                               const muriscv_nn_dims *weights_feature_dims,
+                                               const int8_t *weights_feature_data,
+                                               const muriscv_nn_dims *weights_time_dims,
+                                               const int16_t *weights_time_data,
+                                               const muriscv_nn_dims *bias_dims,
+                                               const int32_t *bias_data,
+                                               const muriscv_nn_dims *output_dims,
+                                               int8_t *output_data);
 
 /**
  * @brief Get size of additional buffer required by muriscv_nn_svdf_s8().
@@ -2704,7 +2708,8 @@ int32_t muriscv_nn_svdf_s8_get_buffer_size_mve(const muriscv_nn_dims *filter_dim
  *
  * @param[in]   input                      Pointer to input data
  * @param[out]  output                     Pointer to output data
- * @param[in]   params                     Struct containing all information about the lstm operator, see muriscv_nn_types.
+ * @param[in]   params                     Struct containing all information about the lstm operator, see
+ * muriscv_nn_types.
  * @param[in]   buffers                    Struct containing pointers to all temporary scratch buffers needed for the
  * lstm operator, see muriscv_nn_types.
  *
@@ -2716,16 +2721,17 @@ int32_t muriscv_nn_svdf_s8_get_buffer_size_mve(const muriscv_nn_dims *filter_dim
  *
  */
 muriscv_nn_status muriscv_nn_lstm_unidirectional_s8(const int8_t *input,
-                                               int8_t *output,
-                                               const muriscv_nn_lstm_params *params,
-                                               muriscv_nn_lstm_context *buffers);
+                                                    int8_t *output,
+                                                    const muriscv_nn_lstm_params *params,
+                                                    muriscv_nn_lstm_context *buffers);
 
 /**
  * @brief LSTM unidirectional function with 16 bit input and output and 16 bit gate output, 64 bit bias.
  *
  * @param[in]   input                      Pointer to input data
  * @param[out]  output                     Pointer to output data
- * @param[in]   params                     Struct containing all information about the lstm operator, see muriscv_nn_types.
+ * @param[in]   params                     Struct containing all information about the lstm operator, see
+ * muriscv_nn_types.
  * @param[in]   buffers                    Struct containing pointers to all temporary scratch buffers needed for the
  * lstm operator, see muriscv_nn_types.
  *
@@ -2737,17 +2743,17 @@ muriscv_nn_status muriscv_nn_lstm_unidirectional_s8(const int8_t *input,
  *
  */
 muriscv_nn_status muriscv_nn_lstm_unidirectional_s16(const int16_t *input,
-                                                int16_t *output,
-                                                const muriscv_nn_lstm_params *params,
-                                                muriscv_nn_lstm_context *buffers);
+                                                     int16_t *output,
+                                                     const muriscv_nn_lstm_params *params,
+                                                     muriscv_nn_lstm_context *buffers);
 
 /**
  * @brief Batch matmul function with 8 bit input and output.
  *
  * @param[in]   ctx                   Temporary scratch buffer
  *                                    The caller is expected to clear the buffer, if applicable, for security reasons.
- *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the buffer
- *                                    size if an additional buffer is required.
+ *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the
+ * buffer size if an additional buffer is required.
  * @param[in]   bmm_params            Batch matmul Parameters
  *                                    Adjoint flags are currently unused.
  * @param[in]   quant_params          Quantization parameters
@@ -2769,22 +2775,22 @@ muriscv_nn_status muriscv_nn_lstm_unidirectional_s16(const int16_t *input,
  *
  */
 muriscv_nn_status muriscv_nn_batch_matmul_s8(const muriscv_nn_context *ctx,
-                                        const muriscv_nn_bmm_params *bmm_params,
-                                        const muriscv_nn_per_tensor_quant_params *quant_params,
-                                        const muriscv_nn_dims *input_lhs_dims,
-                                        const int8_t *input_lhs,
-                                        const muriscv_nn_dims *input_rhs_dims,
-                                        const int8_t *input_rhs,
-                                        const muriscv_nn_dims *output_dims,
-                                        int8_t *output);
+                                             const muriscv_nn_bmm_params *bmm_params,
+                                             const muriscv_nn_per_tensor_quant_params *quant_params,
+                                             const muriscv_nn_dims *input_lhs_dims,
+                                             const int8_t *input_lhs,
+                                             const muriscv_nn_dims *input_rhs_dims,
+                                             const int8_t *input_rhs,
+                                             const muriscv_nn_dims *output_dims,
+                                             int8_t *output);
 
 /**
  * @brief Batch matmul function with 16 bit input and output.
  *
  * @param[in]   ctx                   Temporary scratch buffer
  *                                    The caller is expected to clear the buffer, if applicable, for security reasons.
- *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the buffer
- *                                    size if an additional buffer is required.
+ *                                    Optional function muriscv_nn_fully_connected_s8_get_buffer_size() provides the
+ * buffer size if an additional buffer is required.
  * @param[in]   bmm_params            Batch matmul Parameters
  *                                    Adjoint flags are currently unused.
  * @param[in]   quant_params          Quantization parameters
@@ -2806,14 +2812,14 @@ muriscv_nn_status muriscv_nn_batch_matmul_s8(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_batch_matmul_s16(const muriscv_nn_context *ctx,
-                                         const muriscv_nn_bmm_params *bmm_params,
-                                         const muriscv_nn_per_tensor_quant_params *quant_params,
-                                         const muriscv_nn_dims *input_lhs_dims,
-                                         const int16_t *input_lhs,
-                                         const muriscv_nn_dims *input_rhs_dims,
-                                         const int16_t *input_rhs,
-                                         const muriscv_nn_dims *output_dims,
-                                         int16_t *output);
+                                              const muriscv_nn_bmm_params *bmm_params,
+                                              const muriscv_nn_per_tensor_quant_params *quant_params,
+                                              const muriscv_nn_dims *input_lhs_dims,
+                                              const int16_t *input_lhs,
+                                              const muriscv_nn_dims *input_rhs_dims,
+                                              const int16_t *input_rhs,
+                                              const muriscv_nn_dims *output_dims,
+                                              int16_t *output);
 
 /**
  * @defgroup Pad Pad Layer Functions:
@@ -2834,11 +2840,11 @@ muriscv_nn_status muriscv_nn_batch_matmul_s16(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_pad_s8(const int8_t *input,
-                               int8_t *output,
-                               const int8_t pad_value,
-                               const muriscv_nn_dims *input_size,
-                               const muriscv_nn_dims *pre_pad,
-                               const muriscv_nn_dims *post_pad);
+                                    int8_t *output,
+                                    const int8_t pad_value,
+                                    const muriscv_nn_dims *input_size,
+                                    const muriscv_nn_dims *pre_pad,
+                                    const muriscv_nn_dims *post_pad);
 
 /**
  * @brief Elementwise binary minimum with 8bit data.
@@ -2859,12 +2865,12 @@ muriscv_nn_status muriscv_nn_pad_s8(const int8_t *input,
  *
  */
 muriscv_nn_status muriscv_nn_minimum_s8(const muriscv_nn_context *ctx,
-                                   const int8_t *input_1_data,
-                                   const muriscv_nn_dims *input_1_dims,
-                                   const int8_t *input_2_data,
-                                   const muriscv_nn_dims *input_2_dims,
-                                   int8_t *output_data,
-                                   const muriscv_nn_dims *output_dims);
+                                        const int8_t *input_1_data,
+                                        const muriscv_nn_dims *input_1_dims,
+                                        const int8_t *input_2_data,
+                                        const muriscv_nn_dims *input_2_dims,
+                                        int8_t *output_data,
+                                        const muriscv_nn_dims *output_dims);
 
 /**
  * @brief Elementwise binary maximum with 8bit data.
@@ -2885,12 +2891,33 @@ muriscv_nn_status muriscv_nn_minimum_s8(const muriscv_nn_context *ctx,
  *
  */
 muriscv_nn_status muriscv_nn_maximum_s8(const muriscv_nn_context *ctx,
-                                   const int8_t *input_1_data,
-                                   const muriscv_nn_dims *input_1_dims,
-                                   const int8_t *input_2_data,
-                                   const muriscv_nn_dims *input_2_dims,
-                                   int8_t *output_data,
-                                   const muriscv_nn_dims *output_dims);
+                                        const int8_t *input_1_data,
+                                        const muriscv_nn_dims *input_1_dims,
+                                        const int8_t *input_2_data,
+                                        const muriscv_nn_dims *input_2_dims,
+                                        int8_t *output_data,
+                                        const muriscv_nn_dims *output_dims);
+
+/**
+ * @brief Int8 sigmoid with interpolated lookup table and TFLM input scaling.
+ * @param[in] input Quantized int8 input.
+ * @param[out] output Int8 sigmoid, scale 1/256 and zero point -128.
+ * @param[in] size Number of elements, nonnegative. In-place operation is supported.
+ * @param[in] input_zero_point Input zero point in [-128, 127].
+ * @param[in] input_range_radius Nonnegative centered-input saturation cutoff.
+ * @param[in] input_multiplier Nonnegative Q31 multiplier from TFLM LogisticPrepare.
+ * @param[in] left_shift Multiplier exponent in [-31, 30].
+ * @return MURISCV_NN_SUCCESS or MURISCV_NN_ARG_ERROR for invalid/unsafe parameters.
+ * @note Converts TFLM scaling once per call to a smaller LUT multiplier;
+ *       output is not guaranteed bit-exact to the TFLM reference.
+ */
+muriscv_nn_status muriscv_nn_logistic_s8(const int8_t *input,
+                                         int8_t *output,
+                                         const int32_t size,
+                                         const int32_t input_zero_point,
+                                         const int32_t input_range_radius,
+                                         const int32_t input_multiplier,
+                                         const int32_t left_shift);
 
 #ifdef __cplusplus
 }

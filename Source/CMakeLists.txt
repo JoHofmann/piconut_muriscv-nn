@@ -33,6 +33,7 @@ option(RESHAPE              "Reshape"               ON)
 option(SVDF                 "SVDF"                  ON)
 option(NNSUPPORT            "NN Support"            ON)
 option(LSTM                 "LSTM Support"          ON)
+option(LOGISTIC             "Logistic"              ON)
 
 set(MURISCVNN_LIB "muriscvnn")
 
@@ -92,6 +93,10 @@ endif()
 
 if(LSTM)
   add_subdirectory(LSTMFunctions)
+endif()
+
+if(LOGISTIC)
+  add_subdirectory(LogisticFunctions)
 endif()
 
 # Keep NNSUPPORT at the end

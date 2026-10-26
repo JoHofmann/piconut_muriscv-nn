@@ -48,7 +48,7 @@
  */
 
 /*
- * @brief Neural network activation function using direct table look-up
+ * @brief Neural network activation function for s16 using direct table look-up
  *
  * @note  Refer header file for details.
  *
