@@ -37,7 +37,7 @@
  * (x >> n) + bit (n - 1) of x. Valid for 1 <= n <= 31, cannot overflow.
  * For x >= 0 this is identical to DIV_POW2(x, n).
  */
-static inline vint32m4_t vrshr_rnu_i32m4(vint32m4_t x, size_t n, size_t vl)
+__attribute__((always_inline)) static inline vint32m4_t vrshr_rnu_i32m4(vint32m4_t x, size_t n, size_t vl)
 {
     vint32m4_t q = __riscv_vsra_vx_i32m4(x, n, vl);
     vint32m4_t r = __riscv_vand_vx_i32m4(__riscv_vsra_vx_i32m4(x, n - 1, vl), 1, vl);
@@ -45,7 +45,7 @@ static inline vint32m4_t vrshr_rnu_i32m4(vint32m4_t x, size_t n, size_t vl)
 }
 
 /* Vector version of muriscv_nn_exp_on_negative_values (gemmlowp algorithm). Bit-exact. */
-static inline vint32m4_t exp_on_negative_values_i32m4(vint32m4_t val, size_t vl)
+__attribute__((always_inline)) static inline vint32m4_t exp_on_negative_values_i32m4(vint32m4_t val, size_t vl)
 {
     const int shift = 24;
 
@@ -87,8 +87,12 @@ static inline vint32m4_t exp_on_negative_values_i32m4(vint32m4_t val, size_t vl)
  * Lanes with diff < diff_min are set to 0. A 0 gives exactly the scalar result
  * of a skipped lane in both passes: term = 0 in the sum, Q7_MIN / Q15_MIN in the output.
  */
-static inline vint32m4_t
-softmax_exp_i32m4(vint32m4_t diff, const int32_t shift, const int32_t mult, const int32_t diff_min, size_t vl)
+__attribute__((always_inline)) static inline vint32m4_t softmax_exp_i32m4( //
+    vint32m4_t diff,
+    const int32_t shift,
+    const int32_t mult,
+    const int32_t diff_min,
+    size_t vl)
 {
     vbool8_t drop = __riscv_vmslt_vx_i32m4_b8(diff, diff_min, vl);
     vint32m4_t a = __riscv_vsll_vx_i32m4(diff, shift, vl);
@@ -98,12 +102,12 @@ softmax_exp_i32m4(vint32m4_t diff, const int32_t shift, const int32_t mult, cons
 }
 
 /* exp for vl input elements, evaluated directly for every element */
-static inline vint32m4_t row_exp_i32m4(const int8_t *in,
-                                       const int32_t max,
-                                       const int32_t shift,
-                                       const int32_t mult,
-                                       const int32_t diff_min,
-                                       size_t vl)
+__attribute__((always_inline)) static inline vint32m4_t row_exp_i32m4(const int8_t *in,
+                                                                      const int32_t max,
+                                                                      const int32_t shift,
+                                                                      const int32_t mult,
+                                                                      const int32_t diff_min,
+                                                                      size_t vl)
 {
     vint32m4_t diff = __riscv_vsext_vf4_i32m4(__riscv_vle8_v_i8m1(in, vl), vl);
     diff = __riscv_vsub_vx_i32m4(diff, max, vl);

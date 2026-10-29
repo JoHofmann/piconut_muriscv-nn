@@ -49,10 +49,11 @@ if(USE_CMSIS_NN_WRAPPER)
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/depthwise_conv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/pooling.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/softmax.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/batch_matmul.cc
 
     #
     # muRISCV-NN specific kernels ...
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Include/muriscv_nn/logistic.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn/logistic.cc
   )
 else()
   # Files for running with default TensorFlow kernels
@@ -65,6 +66,7 @@ else()
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/depthwise_conv.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/pooling.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/softmax.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul.cc
     
     #
     # muRISCV-NN specific kernels ...
@@ -189,7 +191,7 @@ set(TFLM_SRCS
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/hard_swish.h
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/ceil.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/strided_slice.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul.cc
+#  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/batch_matmul_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/depthwise_conv_common.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/logical.h

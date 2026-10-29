@@ -72,19 +72,19 @@ class pn_profiler : public tflite::MicroProfilerInterface {
 
     void report_csv() const
     {
-        printf("Index,Tag,Cycles,Instructions,Data\n");
+        printf("Index,Tag,Cycles,Instructions,Data,\n");
         for (size_t i = 0; i < num_events_; ++i)
         {
             uint64_t delta_cycles = end_cycle_[i] - start_cycle_[i];
             uint64_t delta_instret = end_instret_[i] - start_instret_[i];
             uint64_t delta_data = end_data_[i] - start_data_[i];
 
-            printf("%d,%s,%llu,%llu,%llu\n", i, tags_[i], delta_cycles, delta_instret, delta_data);
+            printf("%d,%s,%llu,%llu,%llu,\n", i, tags_[i], delta_cycles, delta_instret, delta_data);
         }
     }
 
   private:
-    static constexpr size_t kMaxEvents = 256;
+    static constexpr size_t kMaxEvents = 512;
     const char *tags_[kMaxEvents];
     uint64_t start_cycle_[kMaxEvents];
     uint64_t end_cycle_[kMaxEvents];

@@ -29,6 +29,8 @@
 #include "muriscv_nn_functions.h"
 #include "muriscv_nn_support_functions.h"
 
+#include <stdio.h>
+
 /**
  * @ingroup groupSupport
  */
@@ -60,7 +62,7 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
                                                const int32_t activation_min,
                                                const int32_t activation_max,
                                                const int32_t address_offset,
-                                               const int32_t rhs_offset) // Currently Unused
+                                               const int32_t rhs_offset) // Not yet supported by PEXT
 {
 #if defined(USE_VEXT)
     if (address_offset == 1) { // TODO: remove this after #81 is fixed
@@ -115,18 +117,23 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
             lhs_value = vadd_vx_i32m4(lhs_value, lhs_offset, vl);
 
             vint32m4_t rhs_value_0 =  __riscv_vsext_vf4_i32m4( __riscv_vle8_v_i8m1(rhs_ptr_0, vl), vl);
+            rhs_value_0 = vadd_vx_i32m4(rhs_value_0, rhs_offset, vl);
             result_0 = __riscv_vmacc_vv_i32m4(result_0, lhs_value, rhs_value_0, vl);
 
             vint32m4_t rhs_value_1 = __riscv_vsext_vf4_i32m4( __riscv_vle8_v_i8m1(rhs_ptr_1, vl), vl);
+            rhs_value_1 = vadd_vx_i32m4(rhs_value_1, rhs_offset, vl);
             result_1 = __riscv_vmacc_vv_i32m4(result_1, lhs_value, rhs_value_1, vl);
 
             vint32m4_t rhs_value_2 = __riscv_vsext_vf4_i32m4( __riscv_vle8_v_i8m1(rhs_ptr_2, vl), vl);
+            rhs_value_2 = vadd_vx_i32m4(rhs_value_2, rhs_offset, vl);
             result_2 = __riscv_vmacc_vv_i32m4(result_2, lhs_value, rhs_value_2, vl);
 
             vint32m4_t rhs_value_3 = __riscv_vsext_vf4_i32m4( __riscv_vle8_v_i8m1(rhs_ptr_3, vl), vl);
+            rhs_value_3 = vadd_vx_i32m4(rhs_value_3, rhs_offset, vl);
             result_3 = __riscv_vmacc_vv_i32m4(result_3, lhs_value, rhs_value_3, vl);
 
             vint32m4_t rhs_value_4 = __riscv_vsext_vf4_i32m4( __riscv_vle8_v_i8m1(rhs_ptr_4, vl), vl);
+            rhs_value_4 = vadd_vx_i32m4(rhs_value_4, rhs_offset, vl);
             result_4 = __riscv_vmacc_vv_i32m4(result_4, lhs_value, rhs_value_4, vl);
 
             rhs_ptr_0 += vl;
@@ -247,6 +254,7 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
             vl = vsetvl_e32m8(rhs_cols_cnt);
 
             vint32m8_t rhs_value = vsext_vf4_i32m8(vle8_v_i8m2(rhs_ptr, vl), vl);
+            rhs_value = vadd_vx_i32m8(rhs_value, rhs_offset, vl);
 
             vint32m8_t lhs_value = vsext_vf4_i32m8(vle8_v_i8m2(lhs_ptr, vl), vl);
             lhs_value = vadd_vx_i32m8(lhs_value, lhs_offset, vl);
@@ -311,11 +319,11 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
         }
         for (int32_t rhs_cols_idx = 0; rhs_cols_idx < rhs_cols; ++rhs_cols_idx)
         {
-            const q31_t rhs_value0 = (int8_t)*rhs_ptr_0;
-            const q31_t rhs_value1 = (int8_t)*rhs_ptr_1;
-            const q31_t rhs_value2 = (int8_t)*rhs_ptr_2;
-            const q31_t rhs_value3 = (int8_t)*rhs_ptr_3;
-            const q31_t rhs_value4 = (int8_t)*rhs_ptr_4;
+            const q31_t rhs_value0 = (int8_t)*rhs_ptr_0 + rhs_offset;
+            const q31_t rhs_value1 = (int8_t)*rhs_ptr_1 + rhs_offset;
+            const q31_t rhs_value2 = (int8_t)*rhs_ptr_2 + rhs_offset;
+            const q31_t rhs_value3 = (int8_t)*rhs_ptr_3 + rhs_offset;
+            const q31_t rhs_value4 = (int8_t)*rhs_ptr_4 + rhs_offset;
             const q31_t lhs_value = (int8_t)*lhs_ptr + lhs_offset;
 
             res00 += lhs_value * rhs_value0;
@@ -384,7 +392,7 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
 
         for (int32_t rhs_cols_idx = 0; rhs_cols_idx < rhs_cols; ++rhs_cols_idx)
         {
-            q31_t rhs_value0 = (int8_t)rhs_ptr[0];
+            q31_t rhs_value0 = (int8_t)rhs_ptr[0] + rhs_offset;
             q31_t lhs_value = (int8_t)lhs_ptr[0] + lhs_offset;
 
             res00 += lhs_value * rhs_value0;
@@ -717,11 +725,11 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
         }
         for (int32_t rhs_cols_idx = 0; rhs_cols_idx < rhs_cols; ++rhs_cols_idx)
         {
-            const q31_t rhs_value0 = (int8_t)*rhs_ptr_0;
-            const q31_t rhs_value1 = (int8_t)*rhs_ptr_1;
-            const q31_t rhs_value2 = (int8_t)*rhs_ptr_2;
-            const q31_t rhs_value3 = (int8_t)*rhs_ptr_3;
-            const q31_t rhs_value4 = (int8_t)*rhs_ptr_4;
+            const q31_t rhs_value0 = (int8_t)*rhs_ptr_0 + rhs_offset;
+            const q31_t rhs_value1 = (int8_t)*rhs_ptr_1 + rhs_offset;
+            const q31_t rhs_value2 = (int8_t)*rhs_ptr_2 + rhs_offset;
+            const q31_t rhs_value3 = (int8_t)*rhs_ptr_3 + rhs_offset;
+            const q31_t rhs_value4 = (int8_t)*rhs_ptr_4 + rhs_offset;
             const q31_t lhs_value = (int8_t)*lhs_ptr + lhs_offset;
 
             res00 += lhs_value * rhs_value0;
@@ -790,7 +798,7 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const q7_t *lhs,
 
         for (int32_t rhs_cols_idx = 0; rhs_cols_idx < rhs_cols; ++rhs_cols_idx)
         {
-            q31_t rhs_value0 = (int8_t)rhs_ptr[0];
+            q31_t rhs_value0 = (int8_t)rhs_ptr[0] + rhs_offset;
             q31_t lhs_value = (int8_t)lhs_ptr[0] + lhs_offset;
 
             res00 += lhs_value * rhs_value0;

@@ -31,6 +31,8 @@
 #include "muriscv_nn_functions.h"
 #include "muriscv_nn_support_functions.h"
 
+#include <stdio.h>
+
 /**
  * @ingroup Public
  */

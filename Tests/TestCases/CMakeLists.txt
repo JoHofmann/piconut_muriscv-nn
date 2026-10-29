@@ -19,6 +19,7 @@
 add_subdirectory(test_muriscv_nn_activation_s16)
 add_subdirectory(test_muriscv_nn_avgpool_s8)
 add_subdirectory(test_muriscv_nn_avgpool_s16)
+add_subdirectory(test_muriscv_nn_batch_matmul_s8)
 add_subdirectory(test_muriscv_nn_convolve_1x1_s8_fast)
 # add_subdirectory(test_muriscv_nn_convolve_fast_s16) # TODO(fabianpedd): Currently not implemented
 add_subdirectory(test_muriscv_nn_convolve_s8)
