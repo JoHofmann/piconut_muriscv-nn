@@ -1481,6 +1481,51 @@ muriscv_nn_requantize_vint32m2(vint32m2_t val, vint32m2_t multiplier, vint32m2_t
 
     return result;
 }
+
+static inline vint32m1_t
+muriscv_nn_requantize_vint32m1(vint32m1_t val,
+                             vint32m1_t multiplier,
+                             vint32m1_t shift,
+                             size_t vl)
+{
+    // TODO: implement MURISCV_NN_USE_SINGLE_ROUNDING
+
+    vuint32m1_t u_shift =
+        __riscv_vreinterpret_v_i32m1_u32m1(
+            __riscv_vneg_v_i32m1(shift, vl));
+
+    // Fractional multiply with round-to-nearest, ties up.
+    vint32m1_t dividend =
+        __riscv_vsmul_vv_i32m1(val, multiplier, __RISCV_VXRM_RNU, vl);
+
+    vint32m1_t result =
+        __riscv_vsra_vv_i32m1(dividend, u_shift, vl);
+
+    // remainder_mask = (1 << shift) - 1
+    vint32m1_t remainder_mask =
+        __riscv_vsub_vx_i32m1(
+            __riscv_vsll_vv_i32m1(
+                __riscv_vmv_v_x_i32m1(1, vl), u_shift, vl),
+            1, vl);
+
+    vint32m1_t threshold =
+        __riscv_vsra_vx_i32m1(remainder_mask, 1, vl);
+
+    // If result < 0, increment threshold; preserve other lanes.
+    vbool32_t mask = __riscv_vmslt_vx_i32m1_b32(result, 0, vl);
+    threshold =
+        __riscv_vadd_vx_i32m1_mu(mask, threshold, threshold, 1, vl);
+
+    vint32m1_t remainder =
+        __riscv_vand_vv_i32m1(remainder_mask, dividend, vl);
+
+    // If remainder > threshold, increment result; preserve other lanes.
+    mask = __riscv_vmsgt_vv_i32m1_b32(remainder, threshold, vl);
+    result =
+        __riscv_vadd_vx_i32m1_mu(mask, result, result, 1, vl);
+
+    return result;
+}
 #endif
 //MURISCV_NN END OF NEW CODE
 //MURISCV_NN NEW CODE

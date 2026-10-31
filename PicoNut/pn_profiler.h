@@ -84,7 +84,7 @@ class pn_profiler : public tflite::MicroProfilerInterface {
     }
 
   private:
-    static constexpr size_t kMaxEvents = 512;
+    static constexpr size_t kMaxEvents = 1024;
     const char *tags_[kMaxEvents];
     uint64_t start_cycle_[kMaxEvents];
     uint64_t end_cycle_[kMaxEvents];
