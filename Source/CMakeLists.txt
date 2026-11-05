@@ -51,6 +51,7 @@ if(SIMULATOR)
 
   if(${SIMULATOR} STREQUAL "PicoNut")
     target_include_directories(${MURISCVNN_LIB} PUBLIC "${PN_SOURCE_DIR}/build/pub/sw/include")
+    target_include_directories(${MURISCVNN_LIB} PRIVATE "${PN_SOURCE_DIR}/hw/common")
   endif()
 
 endif()

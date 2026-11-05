@@ -71,6 +71,7 @@ muriscv_nn_status muriscv_nn_fully_connected_s8(const muriscv_nn_context *ctx,
 
     while (batch_cnt)
     {
+#if defined(FC_WEIGHTS_TRANSPOSED)
         muriscv_nn_vec_mat_mult_t_s8(input,
                                      kernel,
                                      kernel_sum,
@@ -86,10 +87,29 @@ muriscv_nn_status muriscv_nn_fully_connected_s8(const muriscv_nn_context *ctx,
                                      fc_params->activation.max,
                                      1L,
                                      0); //RHS OFFSET CURRENTLY UNUSED
+#else
+        muriscv_nn_vec_mat_mult_s8(input,
+                                   kernel,
+                                   kernel_sum,
+                                   bias,
+                                   output,
+                                   fc_params->input_offset,
+                                   fc_params->output_offset,
+                                   quant_params->multiplier,
+                                   quant_params->shift,
+                                   filter_dims->n, /* col_dim or accum_depth */
+                                   output_dims->c, /* row_dim or output_depth */
+                                   fc_params->activation.min,
+                                   fc_params->activation.max,
+                                   1L,
+                                   0); //RHS OFFSET CURRENTLY UNUSED
+#endif
+
         input += filter_dims->n;
         output += output_dims->c;
         batch_cnt--;
     }
+
     return MURISCV_NN_SUCCESS;
 }
 

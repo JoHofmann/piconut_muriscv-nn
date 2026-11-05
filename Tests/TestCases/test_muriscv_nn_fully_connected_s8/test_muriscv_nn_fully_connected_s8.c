@@ -29,6 +29,21 @@
 #include "../../TestData/fully_connected_out_activation/test_data.h"
 #include "../../Utils/validate.h"
 
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+/* Fixtures use TFLM's [output][input] layout. The non-transposed kernel
+ * expects [input][output]; logical input/output dimensions stay unchanged. */
+static void transpose_fc_weights(const q7_t *src, q7_t *dst, int32_t input_count, int32_t output_count)
+{
+    for (int32_t input_index = 0; input_index < input_count; input_index++)
+    {
+        for (int32_t output_index = 0; output_index < output_count; output_index++)
+        {
+            dst[input_index * output_count + output_index] = src[output_index * input_count + input_index];
+        }
+    }
+}
+#endif
+
 void setUp(void)
 { /* set stuff up here */
 }
@@ -52,6 +67,11 @@ void fully_connected_muriscv_nn_fully_connected_s8(void)
 
     const q31_t *bias_data = fully_connected_biases;
     const q7_t *kernel_data = fully_connected_weights;
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+    q7_t kernel_input_major[FULLY_CONNECTED_ACCUMULATION_DEPTH * FULLY_CONNECTED_OUT_CH];
+    transpose_fc_weights(kernel_data, kernel_input_major, FULLY_CONNECTED_ACCUMULATION_DEPTH, FULLY_CONNECTED_OUT_CH);
+    kernel_data = kernel_input_major;
+#endif
     const q7_t *input_data = fully_connected_input;
     const q7_t *output_ref = fully_connected_output_ref;
     const int32_t output_ref_size = FULLY_CONNECTED_DST_SIZE;
@@ -108,6 +128,11 @@ void fully_connected_mve_0_muriscv_nn_fully_connected_s8(void)
     muriscv_nn_dims output_dims;
     const q31_t *bias_data = fully_connected_mve_0_biases;
     const q7_t *kernel_data = fully_connected_mve_0_weights;
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+    q7_t kernel_input_major[FULLY_CONNECTED_MVE_0_ACCUMULATION_DEPTH * FULLY_CONNECTED_MVE_0_OUT_CH];
+    transpose_fc_weights(kernel_data, kernel_input_major, FULLY_CONNECTED_MVE_0_ACCUMULATION_DEPTH, FULLY_CONNECTED_MVE_0_OUT_CH);
+    kernel_data = kernel_input_major;
+#endif
     const q7_t *input_data = fully_connected_mve_0_input;
     const q7_t *output_ref = fully_connected_mve_0_output_ref;
     const int32_t output_ref_size = FULLY_CONNECTED_MVE_0_DST_SIZE;
@@ -160,6 +185,11 @@ void fully_connected_mve_1_muriscv_nn_fully_connected_s8(void)
     muriscv_nn_dims output_dims;
     const q31_t *bias_data = fully_connected_mve_1_biases;
     const q7_t *kernel_data = fully_connected_mve_1_weights;
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+    q7_t kernel_input_major[FULLY_CONNECTED_MVE_1_ACCUMULATION_DEPTH * FULLY_CONNECTED_MVE_1_OUT_CH];
+    transpose_fc_weights(kernel_data, kernel_input_major, FULLY_CONNECTED_MVE_1_ACCUMULATION_DEPTH, FULLY_CONNECTED_MVE_1_OUT_CH);
+    kernel_data = kernel_input_major;
+#endif
     const q7_t *input_data = fully_connected_mve_1_input;
     const q7_t *output_ref = fully_connected_mve_1_output_ref;
     const int32_t output_ref_size = FULLY_CONNECTED_MVE_1_DST_SIZE;
@@ -212,6 +242,11 @@ void fully_connected_null_bias_0_muriscv_nn_fully_connected_s8(void)
     muriscv_nn_dims output_dims;
     const q31_t *bias_data = fully_connected_null_bias_0_biases;
     const q7_t *kernel_data = fully_connected_null_bias_0_weights;
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+    q7_t kernel_input_major[FULLY_CONNECTED_NULL_BIAS_0_ACCUMULATION_DEPTH * FULLY_CONNECTED_NULL_BIAS_0_OUT_CH];
+    transpose_fc_weights(kernel_data, kernel_input_major, FULLY_CONNECTED_NULL_BIAS_0_ACCUMULATION_DEPTH, FULLY_CONNECTED_NULL_BIAS_0_OUT_CH);
+    kernel_data = kernel_input_major;
+#endif
     const q7_t *input_data = fully_connected_null_bias_0_input;
     const q7_t *output_ref = fully_connected_null_bias_0_output_ref;
     const int32_t output_ref_size = FULLY_CONNECTED_NULL_BIAS_0_DST_SIZE;
@@ -275,6 +310,11 @@ void fully_connected_out_activation_muriscv_nn_fully_connected_s8(void)
     muriscv_nn_dims output_dims;
     const q31_t *bias_data = fully_connected_out_activation_biases;
     const q7_t *kernel_data = fully_connected_out_activation_weights;
+#if !defined(FC_WEIGHTS_TRANSPOSED)
+    q7_t kernel_input_major[FULLY_CONNECTED_OUT_ACTIVATION_ACCUMULATION_DEPTH * FULLY_CONNECTED_OUT_ACTIVATION_OUT_CH];
+    transpose_fc_weights(kernel_data, kernel_input_major, FULLY_CONNECTED_OUT_ACTIVATION_ACCUMULATION_DEPTH, FULLY_CONNECTED_OUT_ACTIVATION_OUT_CH);
+    kernel_data = kernel_input_major;
+#endif
     const q7_t *input_data = fully_connected_out_activation_input;
     const q7_t *output_ref = fully_connected_out_activation_output_ref;
     const int32_t output_ref_size = FULLY_CONNECTED_OUT_ACTIVATION_DST_SIZE;

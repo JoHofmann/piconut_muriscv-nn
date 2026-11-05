@@ -35,6 +35,13 @@ option(USE_PORTABLE "Use the Portable Kernels" OFF)
 option(USE_VEXT "Use the RISC-V V Vector Extension" OFF)
 option(USE_PEXT "Use the RISC-V P Packed Extension" OFF)
 
+# Tensorflow stores weights matrecies in T from. There are more efficient
+# kernels for non T available but we have to flip the matrecies before.
+option(FC_WEIGHTS_TRANSPOSED "Weights of the fully connected layers are transposed or not" ON)
+if(FC_WEIGHTS_TRANSPOSED)
+  add_definitions(-DFC_WEIGHTS_TRANSPOSED)
+endif()
+
 # Set the desired architecture and application binary interface.
 # For more info, see here https://www.sifive.com/blog/all-aboard-part-1-compiler-args
 # Useful combinations are:
