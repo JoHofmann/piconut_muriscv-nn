@@ -1,0 +1,1 @@
+add_muriscv_nn_unit_test(test_muriscv_nn_vec_mat_mult_per_ch_s8)

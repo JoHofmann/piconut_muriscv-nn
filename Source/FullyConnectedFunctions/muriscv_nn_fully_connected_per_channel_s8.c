@@ -59,37 +59,33 @@ muriscv_nn_status muriscv_nn_fully_connected_per_channel_s8(const muriscv_nn_con
                                                        const muriscv_nn_dims *output_dims,
                                                        int8_t *output_data)
 {
+    (void)ctx;
     (void)bias_dims;
 
     int32_t batch_cnt = input_dims->n;
 
-//#if defined(USE_VEXT)
-//    if (ctx->buf == NULL)
-//    {
-//        return (MURISCV_NN_ARG_ERROR);
-//    }
-//#endif
-
-    const int32_t *kernel_sum = (const int32_t *)ctx->buf;
-
     while (batch_cnt)
     {
 
+#if defined(FC_WEIGHTS_TRANSPOSED)
         muriscv_nn_vec_mat_mult_t_per_ch_s8(input_data,
-                                        kernel,
-                                        kernel_sum,
-                                        bias_data,
-                                        output_data,
-                                        fc_params->input_offset,
-                                        fc_params->output_offset,
-                                        quant_params->multiplier,
-                                        quant_params->shift,
-                                        filter_dims->n, /* col_dim or accum_depth */
-                                        output_dims->c, /* row_dim or output_depth */
-                                        fc_params->activation.min,
-                                        fc_params->activation.max,
-                                        1L,
-                                        fc_params->filter_offset);
+#else
+        muriscv_nn_vec_mat_mult_per_ch_s8(input_data,
+#endif
+                                          kernel,
+                                          NULL,
+                                          bias_data,
+                                          output_data,
+                                          fc_params->input_offset,
+                                          fc_params->output_offset,
+                                          quant_params->multiplier,
+                                          quant_params->shift,
+                                          filter_dims->n, /* col_dim or accum_depth */
+                                          output_dims->c, /* row_dim or output_depth */
+                                          fc_params->activation.min,
+                                          fc_params->activation.max,
+                                          1L,
+                                          fc_params->filter_offset);
 
         input_data += filter_dims->n;
         output_data += output_dims->c;

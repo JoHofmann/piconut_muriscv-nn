@@ -72,6 +72,59 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_per_ch_s8(const int8_t *lhs,
                                                     const int32_t address_offset,
                                                     const int32_t rhs_offset)
 {
+#if defined(USE_VEXT) && !defined(MURISCV_NN_USE_SINGLE_ROUNDING)
+    // Keep the scalar path for spaced outputs, as in vec_mat_mult_t_2_s8.
+    // Single-rounding builds also use the scalar requantization below.
+    if (address_offset == 1)
+    {
+        // Each m8 lane accumulates one output row. Restart the input loop
+        // for each output block, including a partial final block.
+        int32_t rows_remaining = rhs_rows;
+        while (rows_remaining > 0)
+        {
+            const size_t vl = __riscv_vsetvl_e32m8(rows_remaining);
+            vint32m8_t output = __riscv_vmv_v_x_i32m8(0, vl);
+            const int8_t *rhs_ptr = rhs;
+
+            for (int32_t col = 0; col < rhs_cols; col++)
+            {
+                const int32_t lhs_value = (int32_t)lhs[col] + lhs_offset;
+                vint32m8_t rhs_value = __riscv_vsext_vf4_i32m8(
+                    __riscv_vlse8_v_i8m2(rhs_ptr, (ptrdiff_t)rhs_cols, vl), vl);
+                rhs_value = __riscv_vadd_vx_i32m8(rhs_value, rhs_offset, vl);
+                output = __riscv_vmacc_vx_i32m8(output, lhs_value, rhs_value, vl);
+                rhs_ptr++;
+            }
+
+            if (bias)
+            {
+                output = __riscv_vadd_vv_i32m8(output, __riscv_vle32_v_i32m8(bias, vl), vl);
+                bias += vl;
+            }
+
+            output = muriscv_nn_requantize_vint32m8(output,
+                                                    __riscv_vle32_v_i32m8(dst_multiplier, vl),
+                                                    __riscv_vle32_v_i32m8(dst_shift, vl),
+                                                    vl);
+
+            output = __riscv_vadd_vx_i32m8(output, dst_offset, vl);
+            output = __riscv_vmax_vx_i32m8(output, activation_min, vl);
+            output = __riscv_vmin_vx_i32m8(output, activation_max, vl);
+
+            const vint16m4_t output_16 = __riscv_vncvt_x_x_w_i16m4(output, vl);
+            const vint8m2_t output_8 = __riscv_vncvt_x_x_w_i8m2(output_16, vl);
+            __riscv_vse8_v_i8m2(dst, output_8, vl);
+
+            dst += vl;
+            dst_multiplier += vl;
+            dst_shift += vl;
+            rhs += (size_t)rhs_cols * vl;
+            rows_remaining -= vl;
+        }
+
+        return MURISCV_NN_SUCCESS;
+    }
+#endif
     if (rhs_offset)
     {
 //#if defined(USE_VEXT)

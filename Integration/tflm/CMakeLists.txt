@@ -41,7 +41,7 @@ if(USE_CMSIS_NN_WRAPPER)
   # Files for running with optimized CMSIS-NN wrapper (which muRISCV-NN uses)
   add_definitions(-DCMSIS_NN)
   set(TFLM_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/fully_connected.cc
+  #  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/fully_connected.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/mul.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/add.cc
   #  ${CMAKE_CURRENT_SOURCE_DIR}/tensorflow/lite/micro/kernels/cmsis_nn/svdf.cc
@@ -53,6 +53,7 @@ if(USE_CMSIS_NN_WRAPPER)
 
     #
     # muRISCV-NN specific kernels ...
+    ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn/fully_connected.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn/logistic.cc
   )
 else()

@@ -931,6 +931,34 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_per_ch_s8(const int8_t *lhs,
                                                     const int32_t rhs_offset);
 
 /**
+ * @brief s8 Vector by input-major Matrix multiplication with per-channel quantization.
+ *
+ * Uses the same arguments as muriscv_nn_vec_mat_mult_t_per_ch_s8, but rhs is
+ * stored as [rhs_cols][rhs_rows]: rhs[input_index * rhs_rows + output_index].
+ * rhs_cols is the input count and rhs_rows is the output count. Bias,
+ * dst_multiplier and dst_shift have one entry per output channel. kernel_sum
+ * is unused because input/weight offsets and bias are applied directly.
+ * address_offset specifies the spacing between output elements.
+ *
+ * @return MURISCV_NN_SUCCESS
+ */
+muriscv_nn_status muriscv_nn_vec_mat_mult_per_ch_s8(const int8_t *lhs,
+                                                  const int8_t *rhs,
+                                                  const int32_t *kernel_sum,
+                                                  const int32_t *bias,
+                                                  int8_t *dst,
+                                                  const int32_t lhs_offset,
+                                                  const int32_t dst_offset,
+                                                  const int32_t *dst_multiplier,
+                                                  const int32_t *dst_shift,
+                                                  const int32_t rhs_cols,
+                                                  const int32_t rhs_rows,
+                                                  const int32_t activation_min,
+                                                  const int32_t activation_max,
+                                                  const int32_t address_offset,
+                                                  const int32_t rhs_offset);
+
+/**
  * @brief s16 Vector by s8 Matrix (transposed) multiplication
  *
  * @param[in]      lhs             Input left-hand side vector
@@ -1462,6 +1490,39 @@ muriscv_nn_requantize_vec(const vint32m8_t val, const q31_t multiplier, const q3
     val_internal = vadd_vx_i32m8_m(mask, val_internal, val_internal, 1, vl);
 
     return val_internal;
+}
+
+/**
+ * @brief Requantize m8 accumulators with a multiplier and shift per channel.
+ * Positive shifts are applied before multiplication; negative shifts use
+ * rounding away from zero at the halfway point, matching scalar requantize.
+ * This helper implements the default double-rounding mode only.
+ */
+static inline vint32m8_t muriscv_nn_requantize_vint32m8(vint32m8_t output,
+                                                     const vint32m8_t multiplier,
+                                                     const vint32m8_t shift,
+                                                     const size_t vl)
+{
+    // Apply each channel's positive shift before the fractional
+    // multiply, then round its right shift as in scalar requantize.
+    const vuint32m8_t left_shift = __riscv_vreinterpret_v_i32m8_u32m8(
+        __riscv_vmax_vx_i32m8(shift, 0, vl));
+    output = __riscv_vsll_vv_i32m8(output, left_shift, vl);
+    output = __riscv_vsmul_vv_i32m8(
+        output, multiplier, __RISCV_VXRM_RNU, vl);
+
+    const vuint32m8_t right_shift = __riscv_vreinterpret_v_i32m8_u32m8(
+        __riscv_vneg_v_i32m8(__riscv_vmin_vx_i32m8(shift, 0, vl), vl));
+    const vint32m8_t remainder_mask = __riscv_vsub_vx_i32m8(
+        __riscv_vsll_vv_i32m8(__riscv_vmv_v_x_i32m8(1, vl), right_shift, vl), 1, vl);
+    const vint32m8_t remainder = __riscv_vand_vv_i32m8(output, remainder_mask, vl);
+    vint32m8_t threshold = __riscv_vsra_vx_i32m8(remainder_mask, 1, vl);
+    output = __riscv_vsra_vv_i32m8(output, right_shift, vl);
+    vbool4_t mask = __riscv_vmslt_vx_i32m8_b4(output, 0, vl);
+    threshold = __riscv_vadd_vx_i32m8_mu(mask, threshold, threshold, 1, vl);
+    mask = __riscv_vmsgt_vv_i32m8_b4(remainder, threshold, vl);
+    output = __riscv_vadd_vx_i32m8_mu(mask, output, output, 1, vl);
+    return output;
 }
 
 static inline vint32m4_t

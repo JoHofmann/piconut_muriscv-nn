@@ -28,8 +28,6 @@
 #include "muriscv_nn_functions.h"
 #include "muriscv_nn_support_functions.h"
 
-#include "pn_profiler.h"
-
 /**
  * @ingroup groupSupport
  */

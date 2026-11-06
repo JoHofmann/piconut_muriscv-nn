@@ -65,7 +65,6 @@ muriscv_nn_status muriscv_nn_fully_connected_wrapper_s8(const muriscv_nn_context
     {
         const muriscv_nn_per_channel_quant_params per_channel_quant_params = {quant_params->multiplier,
                                                                             quant_params->shift};
-
         return muriscv_nn_fully_connected_per_channel_s8(ctx,
                                                   fc_params,
                                                   &per_channel_quant_params,
