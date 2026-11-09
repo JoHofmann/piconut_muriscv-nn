@@ -71,7 +71,10 @@ ENABLE_UNIT_TESTS = ON
 SIMULATOR = PicoNut
 #SIMULATOR = Spike
 
+# TFLM stores its weights in transposed form (=ON). By transposing the weights
+# of the model before more efficient kernels can be used (=OFF).
 FC_WEIGHTS_TRANSPOSED = OFF
+
 
 # Include PicoNut setup ...
 include ../../../piconut.mk
