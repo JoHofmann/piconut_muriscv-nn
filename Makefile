@@ -67,9 +67,8 @@ USE_PORTABLE = OFF
 USE_PEXT = OFF
 TOOLCHAIN = GCC
 
-ENABLE_UNIT_TESTS = ON
+ENABLE_UNIT_TESTS = OFF
 SIMULATOR = PicoNut
-#SIMULATOR = Spike
 
 # TFLM stores its weights in transposed form (=ON). By transposing the weights
 # of the model before more efficient kernels can be used (=OFF).

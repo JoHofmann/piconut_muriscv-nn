@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * Modifications copyright (C) 2021-2024 Chair of Electronic Design Automation, TUM
+ * Modifications copyright (C) 2026 Johannes Hofmann, THA <johannes.hofmann1@tha.de>
  */
 
 #if defined(USE_VEXT)

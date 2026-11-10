@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 # Modifications copyright (C) 2024 Chair of Electronic Design Automation, TUM
+# Modifications copyright (C) 2026 Johannes Hofmann, THA <johannes.hofmann1@tha.de>
 #
 
 target_sources(${MURISCVNN_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_depthwise_conv_nt_t_padded_s8.c
@@ -23,7 +24,7 @@ target_sources(${MURISCVNN_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_d
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_mat_mul_core_1x_s8.c
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_mat_mul_core_4x_s8.c
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_mat_mult_nt_t_s8.c
-                                        ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_vec_mat_mult_t_2_s8.c
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_vec_mat_mult_t_s8.c
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_vec_mat_mult_s8.c
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_vec_mat_mult_per_ch_s8.c
                                         ${CMAKE_CURRENT_SOURCE_DIR}/muriscv_nn_vec_mat_mult_t_s16.c

@@ -1,4 +1,3 @@
-// Modifications copyright (C) 2024 Chair of Electronic Design Automation, TUM
 /*
  * SPDX-FileCopyrightText: Copyright 2010-2024 Arm Limited and/or its affiliates <open-source-office@arm.com>
  *
@@ -15,6 +14,9 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright (C) 2024 Chair of Electronic Design Automation, TUM
+ * Modifications copyright (C) 2026 Johannes Hofmann, THA <johannes.hofmann1@tha.de>
  */
 
 /* ----------------------------------------------------------------------
@@ -35,7 +37,7 @@
 #include "muriscv_nn_math_types.h"
 #include "muriscv_nn_types.h"
 
-//MURISCV_NN NEW CODE  //Include this around any code unique to muRISCV-nn for auto-sync with CMSIS
+// MURISCV_NN NEW CODE  //Include this around any code unique to muRISCV-nn for auto-sync with CMSIS
 #if defined(USE_VEXT)
 #include <riscv_vector.h>
 #if (__clang_major__ >= 16) || (__GNUC__ >= 13)
@@ -152,7 +154,7 @@
 #include "muriscv_nn_util.h"
 #include <stdbool.h>
 #include <string.h>
-//MURISCV_NN END OF NEW CODE
+// MURISCV_NN END OF NEW CODE
 #include <stdbool.h>
 
 #ifdef __cplusplus
@@ -169,7 +171,7 @@ extern "C" {
 #define MASK_IF_NON_ZERO(x) (x) != 0 ? ~0 : 0
 #define SELECT_USING_MASK(mask, a, b) ((mask) & (a)) ^ (~(mask) & (b))
 
-//MURISCV_NN NEW CODE
+// MURISCV_NN NEW CODE
 #if defined(USE_PEXT)
 #define MAX_RV(A, B) __rv_max(A, B)
 #define MIN_RV(A, B) __rv_min(A, B)
@@ -177,10 +179,10 @@ extern "C" {
 #define MAX_RV(A, B) ((A) > (B) ? (A) : (B))
 #define MIN_RV(A, B) ((A) < (B) ? (A) : (B))
 #endif
-//MURISCV_NN END OF NEW CODE
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN END OF NEW CODE
+// MURISCV_NN CUSTOM CODE
 #define MAX(A, B) MAX_RV(A, B)
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 #define MIN(A, B) MIN_RV(A, B)
 #define CLAMP(x, h, l) MAX(MIN((x), (h)), (l))
 #define REDUCE_MULTIPLIER(_mult) ((_mult < 0x7FFF0000) ? ((_mult + (1 << 15)) >> 16) : 0x7FFF)
@@ -202,30 +204,32 @@ extern "C" {
 // to not loose precision.
 #define MAX_COL_COUNT (512)
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief definition to pack four 8 bit values.
  */
 #define PACK_S8x4_32x1(v0, v1, v2, v3) PACK_Q7x4_32x1(v0, v1, v2, v3)
-//MURISCV_NN NEW CODE
+// MURISCV_NN NEW CODE
 #if defined(USE_PEXT)
-#define PACK_Q7x4_32x1(v0, v1, v2, v3) ((__rv_packu((uint8_t)(v0), (uint8_t)(v2))) | ((__rv_packu((uint8_t)(v1), (uint8_t)(v3))) << 8))
+#define PACK_Q7x4_32x1(v0, v1, v2, v3)                                                                                 \
+    ((__rv_packu((uint8_t)(v0), (uint8_t)(v2))) | ((__rv_packu((uint8_t)(v1), (uint8_t)(v3))) << 8))
 #else
 #define PACK_Q7x4_32x1(v0, v1, v2, v3)                                                                                 \
     ((((int32_t)(v0) << 0) & (int32_t)0x000000FF) | (((int32_t)(v1) << 8) & (int32_t)0x0000FF00) |                     \
      (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) | (((int32_t)(v3) << 24) & (int32_t)0xFF000000))
 #endif
-//MURISCV_NN END OF NEW CODE
+// MURISCV_NN END OF NEW CODE
 
 /**
  * @brief definition to pack two 16 bit values.
  */
 #define PACK_Q15x2_32x1(v0, v1) (((int32_t)v0 & (int32_t)0xFFFF) | ((int32_t)v1 << 16))
 
-//MURISCV_NN NEW CODE
+// MURISCV_NN NEW CODE
 /**
-* @brief These instructions are part of the rv32imv spec, but not currently supported by Vicuna (as of 06/2023). Attempting to use them results in an illegal instruction exception.
-*/
+ * @brief These instructions are part of the rv32imv spec, but not currently supported by Vicuna (as of 06/2023).
+ * Attempting to use them results in an illegal instruction exception.
+ */
 #if defined(SIM_VICUNA)
 
 #define vsext_vf4_i32m2 vicuna_sext_i32m2
@@ -241,7 +245,7 @@ static inline vint32m8_t vicuna_sext_i32m8(vint8m2_t input, size_t vl)
 }
 
 #endif
-//MURISCV_NN END OF NEW CODE
+// MURISCV_NN END OF NEW CODE
 /**
  * @defgroup groupSupport Private
  *
@@ -353,7 +357,7 @@ void muriscv_nn_s8_to_s16_unordered_with_offset(const int8_t *src, int16_t *dst,
  *
  */
 int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size_mve(const muriscv_nn_dims *input_dims,
-                                                      const muriscv_nn_dims *filter_dims);
+                                                             const muriscv_nn_dims *filter_dims);
 
 /**
  * @brief Get the required buffer size for optimized s8 depthwise convolution
@@ -367,7 +371,7 @@ int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size_mve(const muriscv_nn_di
  *
  */
 int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size_dsp(const muriscv_nn_dims *input_dims,
-                                                      const muriscv_nn_dims *filter_dims);
+                                                             const muriscv_nn_dims *filter_dims);
 
 /**
  * @brief Depthwise conv on an im2col buffer where the input channel equals output channel.
@@ -389,16 +393,16 @@ int32_t muriscv_nn_depthwise_conv_s8_opt_get_buffer_size_dsp(const muriscv_nn_di
  * @details     Supported framework: TensorFlow Lite micro.
  */
 int8_t *muriscv_nn_depthwise_conv_s8_core(const int8_t *row,
-                                      const int16_t *col,
-                                      const uint16_t num_ch,
-                                      const int32_t *out_shift,
-                                      const int32_t *out_mult,
-                                      const int32_t out_offset,
-                                      const int32_t activation_min,
-                                      const int32_t activation_max,
-                                      const uint16_t kernel_size,
-                                      const int32_t *const output_bias,
-                                      int8_t *out);
+                                          const int16_t *col,
+                                          const uint16_t num_ch,
+                                          const int32_t *out_shift,
+                                          const int32_t *out_mult,
+                                          const int32_t out_offset,
+                                          const int32_t activation_min,
+                                          const int32_t activation_max,
+                                          const uint16_t kernel_size,
+                                          const int32_t *const output_bias,
+                                          int8_t *out);
 
 /**
  * @brief General Matrix-multiplication function with per-channel requantization.
@@ -423,19 +427,19 @@ int8_t *muriscv_nn_depthwise_conv_s8_core(const int8_t *row,
  * @details   Supported framework: TensorFlow Lite
  */
 int8_t *muriscv_nn_mat_mult_s8(const int8_t *input_row,
-                           const int8_t *input_col,
-                           const uint16_t output_ch,
-                           const uint16_t col_batches,
-                           const int32_t *output_shift,
-                           const int32_t *output_mult,
-                           const int32_t out_offset,
-                           const int32_t col_offset,
-                           const int32_t row_offset,
-                           const int16_t out_activation_min,
-                           const int16_t out_activation_max,
-                           const uint16_t row_len,
-                           const int32_t *const bias,
-                           int8_t *out);
+                               const int8_t *input_col,
+                               const uint16_t output_ch,
+                               const uint16_t col_batches,
+                               const int32_t *output_shift,
+                               const int32_t *output_mult,
+                               const int32_t out_offset,
+                               const int32_t col_offset,
+                               const int32_t row_offset,
+                               const int16_t out_activation_min,
+                               const int16_t out_activation_max,
+                               const uint16_t row_len,
+                               const int32_t *const bias,
+                               int8_t *out);
 /**
  * @brief Matrix-multiplication function for convolution with per-channel requantization for 16 bits convolution.
  * @param[in]       input_a     pointer to operand A
@@ -460,17 +464,17 @@ int8_t *muriscv_nn_mat_mult_s8(const int8_t *input_row,
  *            Supported framework: TensorFlow Lite micro.
  */
 int16_t *muriscv_nn_mat_mult_kernel_s16(const int8_t *input_a,
-                                    const int16_t *input_b,
-                                    const int32_t output_ch,
-                                    const int32_t *out_shift,
-                                    const int32_t *out_mult,
-                                    const int32_t activation_min,
-                                    const int32_t activation_max,
-                                    const int32_t num_col_a,
-                                    const muriscv_nn_bias_data *const bias_data,
-                                    int16_t *out_0);
+                                        const int16_t *input_b,
+                                        const int32_t output_ch,
+                                        const int32_t *out_shift,
+                                        const int32_t *out_mult,
+                                        const int32_t activation_min,
+                                        const int32_t activation_max,
+                                        const int32_t num_col_a,
+                                        const muriscv_nn_bias_data *const bias_data,
+                                        int16_t *out_0);
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief General Matrix-multiplication without requantization for one row & one column
  * @param[in]       row_elements  number of row elements
@@ -523,14 +527,14 @@ muriscv_nn_status muriscv_nn_mat_mul_core_1x_s8(int32_t row_elements,
  *
  */
 muriscv_nn_status muriscv_nn_mat_mul_core_1x_s4(int32_t row_elements,
-                                              const int32_t skipped_row_elements,
-                                              const int8_t *row_base_ref,
-                                              const int8_t *col_base_ref,
-                                              const int32_t out_ch,
-                                              const muriscv_nn_conv_params *conv_params,
-                                              const muriscv_nn_per_channel_quant_params *quant_params,
-                                              const int32_t *bias,
-                                              int8_t *output);
+                                                const int32_t skipped_row_elements,
+                                                const int8_t *row_base_ref,
+                                                const int8_t *col_base_ref,
+                                                const int32_t out_ch,
+                                                const muriscv_nn_conv_params *conv_params,
+                                                const muriscv_nn_per_channel_quant_params *quant_params,
+                                                const int32_t *bias,
+                                                int8_t *output);
 
 /**
  * @brief Matrix-multiplication with requantization & activation function for four rows and one column
@@ -550,14 +554,14 @@ muriscv_nn_status muriscv_nn_mat_mul_core_1x_s4(int32_t row_elements,
  * @details Compliant to TFLM int8 specification. MVE implementation only
  */
 int8_t *muriscv_nn_mat_mul_core_4x_s8(const int32_t row_elements,
-                                  const int32_t offset,
-                                  const int8_t *row_base,
-                                  const int8_t *col_base,
-                                  const int32_t out_ch,
-                                  const muriscv_nn_conv_params *conv_params,
-                                  const muriscv_nn_per_channel_quant_params *quant_params,
-                                  const int32_t *bias,
-                                  int8_t *output);
+                                      const int32_t offset,
+                                      const int8_t *row_base,
+                                      const int8_t *col_base,
+                                      const int32_t out_ch,
+                                      const muriscv_nn_conv_params *conv_params,
+                                      const muriscv_nn_per_channel_quant_params *quant_params,
+                                      const int32_t *bias,
+                                      int8_t *output);
 
 /**
  * @brief General Matrix-multiplication function with per-channel requantization.
@@ -592,19 +596,19 @@ int8_t *muriscv_nn_mat_mul_core_4x_s8(const int32_t row_elements,
  *
  */
 muriscv_nn_status muriscv_nn_mat_mult_nt_t_s4(const int8_t *lhs,
-                                            const int8_t *rhs,
-                                            const int32_t *bias,
-                                            int8_t *dst,
-                                            const int32_t *dst_multipliers,
-                                            const int32_t *dst_shifts,
-                                            const int32_t lhs_rows,
-                                            const int32_t rhs_rows,
-                                            const int32_t rhs_cols,
-                                            const int32_t lhs_offset,
-                                            const int32_t dst_offset,
-                                            const int32_t activation_min,
-                                            const int32_t activation_max,
-                                            const int32_t lhs_cols_offset);
+                                              const int8_t *rhs,
+                                              const int32_t *bias,
+                                              int8_t *dst,
+                                              const int32_t *dst_multipliers,
+                                              const int32_t *dst_shifts,
+                                              const int32_t lhs_rows,
+                                              const int32_t rhs_rows,
+                                              const int32_t rhs_cols,
+                                              const int32_t lhs_offset,
+                                              const int32_t dst_offset,
+                                              const int32_t activation_min,
+                                              const int32_t activation_max,
+                                              const int32_t lhs_cols_offset);
 
 /**
  * @brief General Matrix-multiplication function with per-channel requantization.
@@ -641,19 +645,19 @@ muriscv_nn_status muriscv_nn_mat_mult_nt_t_s4(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_mat_mult_nt_interleaved_t_even_s4(const int8_t *lhs,
-                                                             const int8_t *rhs,
-                                                             const int32_t *bias,
-                                                             int8_t *dst,
-                                                             const int32_t *dst_multipliers,
-                                                             const int32_t *dst_shifts,
-                                                             const int32_t lhs_rows,
-                                                             const int32_t rhs_rows,
-                                                             const int32_t rhs_cols,
-                                                             const int32_t lhs_offset,
-                                                             const int32_t dst_offset,
-                                                             const int32_t activation_min,
-                                                             const int32_t activation_max,
-                                                             const int32_t lhs_cols_offset);
+                                                               const int8_t *rhs,
+                                                               const int32_t *bias,
+                                                               int8_t *dst,
+                                                               const int32_t *dst_multipliers,
+                                                               const int32_t *dst_shifts,
+                                                               const int32_t lhs_rows,
+                                                               const int32_t rhs_rows,
+                                                               const int32_t rhs_cols,
+                                                               const int32_t lhs_offset,
+                                                               const int32_t dst_offset,
+                                                               const int32_t activation_min,
+                                                               const int32_t activation_max,
+                                                               const int32_t lhs_cols_offset);
 
 /**
  * @brief General Matrix-multiplication function with per-channel requantization.
@@ -687,20 +691,20 @@ muriscv_nn_status muriscv_nn_mat_mult_nt_interleaved_t_even_s4(const int8_t *lhs
  *
  */
 muriscv_nn_status muriscv_nn_mat_mult_nt_t_s8(const int8_t *lhs,
-                                            const int8_t *rhs,
-                                            const int32_t *bias,
-                                            int8_t *dst,
-                                            const int32_t *dst_multipliers,
-                                            const int32_t *dst_shifts,
-                                            const int32_t lhs_rows,
-                                            const int32_t rhs_rows,
-                                            const int32_t rhs_cols,
-                                            const int32_t lhs_offset,
-                                            const int32_t dst_offset,
-                                            const int32_t activation_min,
-                                            const int32_t activation_max,
-                                            const int32_t row_address_offset,
-                                            const int32_t lhs_cols_offset);
+                                              const int8_t *rhs,
+                                              const int32_t *bias,
+                                              int8_t *dst,
+                                              const int32_t *dst_multipliers,
+                                              const int32_t *dst_shifts,
+                                              const int32_t lhs_rows,
+                                              const int32_t rhs_rows,
+                                              const int32_t rhs_cols,
+                                              const int32_t lhs_offset,
+                                              const int32_t dst_offset,
+                                              const int32_t activation_min,
+                                              const int32_t activation_max,
+                                              const int32_t row_address_offset,
+                                              const int32_t lhs_cols_offset);
 
 /**
  * @brief General Matrix-multiplication function with per-channel requantization and int16 input (LHS) and output.
@@ -734,16 +738,16 @@ muriscv_nn_status muriscv_nn_mat_mult_nt_t_s8(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_mat_mult_nt_t_s16(const int16_t *lhs,
-                                             const int8_t *rhs,
-                                             const muriscv_nn_bias_data *bias_data,
-                                             int16_t *dst,
-                                             const int32_t *dst_multipliers,
-                                             const int32_t *dst_shifts,
-                                             const int32_t lhs_rows,
-                                             const int32_t rhs_rows,
-                                             const int32_t rhs_cols,
-                                             const int32_t activation_min,
-                                             const int32_t activation_max);
+                                               const int8_t *rhs,
+                                               const muriscv_nn_bias_data *bias_data,
+                                               int16_t *dst,
+                                               const int32_t *dst_multipliers,
+                                               const int32_t *dst_shifts,
+                                               const int32_t lhs_rows,
+                                               const int32_t rhs_rows,
+                                               const int32_t rhs_cols,
+                                               const int32_t activation_min,
+                                               const int32_t activation_max);
 
 /**
  * @brief General Matrix-multiplication function with int8 input and int32 output.
@@ -766,13 +770,13 @@ muriscv_nn_status muriscv_nn_mat_mult_nt_t_s16(const int16_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_mat_mult_nt_t_s8_s32(const int8_t *lhs,
-                                                const int8_t *rhs,
-                                                int32_t *dst,
-                                                const int32_t lhs_rows,
-                                                const int32_t rhs_rows,
-                                                const int32_t rhs_cols,
-                                                const int32_t lhs_offset,
-                                                const int32_t dst_idx_offset);
+                                                  const int8_t *rhs,
+                                                  int32_t *dst,
+                                                  const int32_t lhs_rows,
+                                                  const int32_t rhs_rows,
+                                                  const int32_t rhs_cols,
+                                                  const int32_t lhs_offset,
+                                                  const int32_t dst_idx_offset);
 
 /**
  * @brief s4 Vector by Matrix (transposed) multiplication
@@ -795,17 +799,17 @@ muriscv_nn_status muriscv_nn_mat_mult_nt_t_s8_s32(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_s4(const int8_t *lhs,
-                                             const int8_t *packed_rhs,
-                                             const int32_t *bias,
-                                             int8_t *dst,
-                                             const int32_t lhs_offset,
-                                             const int32_t dst_offset,
-                                             const int32_t dst_multiplier,
-                                             const int32_t dst_shift,
-                                             const int32_t rhs_cols,
-                                             const int32_t rhs_rows,
-                                             const int32_t activation_min,
-                                             const int32_t activation_max);
+                                               const int8_t *packed_rhs,
+                                               const int32_t *bias,
+                                               int8_t *dst,
+                                               const int32_t lhs_offset,
+                                               const int32_t dst_offset,
+                                               const int32_t dst_multiplier,
+                                               const int32_t dst_shift,
+                                               const int32_t rhs_cols,
+                                               const int32_t rhs_rows,
+                                               const int32_t activation_min,
+                                               const int32_t activation_max);
 
 /**
  * @brief s8 Vector by Matrix (transposed) multiplication
@@ -833,20 +837,20 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s4(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_s8(const int8_t *lhs,
-                                             const int8_t *rhs,
-                                             const int32_t *kernel_sum,
-                                             const int32_t *bias,
-                                             int8_t *dst,
-                                             const int32_t lhs_offset,
-                                             const int32_t dst_offset,
-                                             const int32_t dst_multiplier,
-                                             const int32_t dst_shift,
-                                             const int32_t rhs_cols,
-                                             const int32_t rhs_rows,
-                                             const int32_t activation_min,
-                                             const int32_t activation_max,
-                                             const int32_t address_offset,
-                                             const int32_t rhs_offset);
+                                               const int8_t *rhs,
+                                               const int32_t *kernel_sum,
+                                               const int32_t *bias,
+                                               int8_t *dst,
+                                               const int32_t lhs_offset,
+                                               const int32_t dst_offset,
+                                               const int32_t dst_multiplier,
+                                               const int32_t dst_shift,
+                                               const int32_t rhs_cols,
+                                               const int32_t rhs_rows,
+                                               const int32_t activation_min,
+                                               const int32_t activation_max,
+                                               const int32_t address_offset,
+                                               const int32_t rhs_offset);
 
 /**
  * @brief s8 Vector by Matrix multiplication
@@ -915,20 +919,20 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_s8(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_per_ch_s8(const int8_t *lhs,
-                                                    const int8_t *rhs,
-                                                    const int32_t *kernel_sum,
-                                                    const int32_t *bias,
-                                                    int8_t *dst,
-                                                    const int32_t lhs_offset,
-                                                    const int32_t dst_offset,
-                                                    const int32_t *dst_multiplier,
-                                                    const int32_t *dst_shift,
-                                                    const int32_t rhs_cols,
-                                                    const int32_t rhs_rows,
-                                                    const int32_t activation_min,
-                                                    const int32_t activation_max,
-                                                    const int32_t address_offset,
-                                                    const int32_t rhs_offset);
+                                                      const int8_t *rhs,
+                                                      const int32_t *kernel_sum,
+                                                      const int32_t *bias,
+                                                      int8_t *dst,
+                                                      const int32_t lhs_offset,
+                                                      const int32_t dst_offset,
+                                                      const int32_t *dst_multiplier,
+                                                      const int32_t *dst_shift,
+                                                      const int32_t rhs_cols,
+                                                      const int32_t rhs_rows,
+                                                      const int32_t activation_min,
+                                                      const int32_t activation_max,
+                                                      const int32_t address_offset,
+                                                      const int32_t rhs_offset);
 
 /**
  * @brief s8 Vector by input-major Matrix multiplication with per-channel quantization.
@@ -943,20 +947,20 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_per_ch_s8(const int8_t *lhs,
  * @return MURISCV_NN_SUCCESS
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_per_ch_s8(const int8_t *lhs,
-                                                  const int8_t *rhs,
-                                                  const int32_t *kernel_sum,
-                                                  const int32_t *bias,
-                                                  int8_t *dst,
-                                                  const int32_t lhs_offset,
-                                                  const int32_t dst_offset,
-                                                  const int32_t *dst_multiplier,
-                                                  const int32_t *dst_shift,
-                                                  const int32_t rhs_cols,
-                                                  const int32_t rhs_rows,
-                                                  const int32_t activation_min,
-                                                  const int32_t activation_max,
-                                                  const int32_t address_offset,
-                                                  const int32_t rhs_offset);
+                                                    const int8_t *rhs,
+                                                    const int32_t *kernel_sum,
+                                                    const int32_t *bias,
+                                                    int8_t *dst,
+                                                    const int32_t lhs_offset,
+                                                    const int32_t dst_offset,
+                                                    const int32_t *dst_multiplier,
+                                                    const int32_t *dst_shift,
+                                                    const int32_t rhs_cols,
+                                                    const int32_t rhs_rows,
+                                                    const int32_t activation_min,
+                                                    const int32_t activation_max,
+                                                    const int32_t address_offset,
+                                                    const int32_t rhs_offset);
 
 /**
  * @brief s16 Vector by s8 Matrix (transposed) multiplication
@@ -976,15 +980,15 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_per_ch_s8(const int8_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_s16(const int16_t *lhs,
-                                              const int8_t *rhs,
-                                              const int64_t *bias,
-                                              int16_t *dst,
-                                              const int32_t dst_multiplier,
-                                              const int32_t dst_shift,
-                                              const int32_t rhs_cols,
-                                              const int32_t rhs_rows,
-                                              const int32_t activation_min,
-                                              const int32_t activation_max);
+                                                const int8_t *rhs,
+                                                const int64_t *bias,
+                                                int16_t *dst,
+                                                const int32_t dst_multiplier,
+                                                const int32_t dst_shift,
+                                                const int32_t rhs_cols,
+                                                const int32_t rhs_rows,
+                                                const int32_t activation_min,
+                                                const int32_t activation_max);
 
 /**
  * @brief s16 Vector by s16 Matrix (transposed) multiplication
@@ -1004,15 +1008,15 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s16(const int16_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_s16_s16(const int16_t *lhs,
-                                                  const int16_t *rhs,
-                                                  const int64_t *bias,
-                                                  int16_t *dst,
-                                                  const int32_t dst_multiplier,
-                                                  const int32_t dst_shift,
-                                                  const int32_t rhs_cols,
-                                                  const int32_t rhs_rows,
-                                                  const int32_t activation_min,
-                                                  const int32_t activation_max);
+                                                    const int16_t *rhs,
+                                                    const int64_t *bias,
+                                                    int16_t *dst,
+                                                    const int32_t dst_multiplier,
+                                                    const int32_t dst_shift,
+                                                    const int32_t rhs_cols,
+                                                    const int32_t rhs_rows,
+                                                    const int32_t activation_min,
+                                                    const int32_t activation_max);
 
 /**
  * @brief s8 Vector by Matrix (transposed) multiplication with s16 output
@@ -1035,16 +1039,16 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_s16_s16(const int16_t *lhs,
  *
  */
 muriscv_nn_status muriscv_nn_vec_mat_mult_t_svdf_s8(const int8_t *lhs,
-                                                  const int8_t *rhs,
-                                                  int16_t *dst,
-                                                  const int32_t lhs_offset,
-                                                  const int32_t scatter_offset,
-                                                  const int32_t dst_multiplier,
-                                                  const int32_t dst_shift,
-                                                  const int32_t rhs_cols,
-                                                  const int32_t rhs_rows,
-                                                  const int32_t activation_min,
-                                                  const int32_t activation_max);
+                                                    const int8_t *rhs,
+                                                    int16_t *dst,
+                                                    const int32_t lhs_offset,
+                                                    const int32_t scatter_offset,
+                                                    const int32_t dst_multiplier,
+                                                    const int32_t dst_shift,
+                                                    const int32_t rhs_cols,
+                                                    const int32_t rhs_rows,
+                                                    const int32_t activation_min,
+                                                    const int32_t activation_max);
 
 /**
  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in padded cases where
@@ -1076,18 +1080,18 @@ muriscv_nn_status muriscv_nn_vec_mat_mult_t_svdf_s8(const int8_t *lhs,
  *                  - rhs
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_padded_s8(const int8_t *lhs,
-                                                         const int8_t *rhs,
-                                                         const int32_t lhs_offset,
-                                                         const int32_t active_ch,
-                                                         const int32_t total_ch,
-                                                         const int32_t *out_shift,
-                                                         const int32_t *out_mult,
-                                                         const int32_t out_offset,
-                                                         const int32_t activation_min,
-                                                         const int32_t activation_max,
-                                                         const uint16_t row_x_col,
-                                                         const int32_t *const output_bias,
-                                                         int8_t *out);
+                                                           const int8_t *rhs,
+                                                           const int32_t lhs_offset,
+                                                           const int32_t active_ch,
+                                                           const int32_t total_ch,
+                                                           const int32_t *out_shift,
+                                                           const int32_t *out_mult,
+                                                           const int32_t out_offset,
+                                                           const int32_t activation_min,
+                                                           const int32_t activation_max,
+                                                           const uint16_t row_x_col,
+                                                           const int32_t *const output_bias,
+                                                           int8_t *out);
 
 /**
  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in non-padded cases.
@@ -1119,18 +1123,18 @@ muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_padded_s8(const int8_t *lhs,
  *                  - rhs
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_s8(const int8_t *lhs,
-                                                  const int8_t *rhs,
-                                                  const int32_t lhs_offset,
-                                                  const int32_t active_ch,
-                                                  const int32_t total_ch,
-                                                  const int32_t *out_shift,
-                                                  const int32_t *out_mult,
-                                                  const int32_t out_offset,
-                                                  const int32_t activation_min,
-                                                  const int32_t activation_max,
-                                                  const uint16_t row_x_col,
-                                                  const int32_t *const output_bias,
-                                                  int8_t *out);
+                                                    const int8_t *rhs,
+                                                    const int32_t lhs_offset,
+                                                    const int32_t active_ch,
+                                                    const int32_t total_ch,
+                                                    const int32_t *out_shift,
+                                                    const int32_t *out_mult,
+                                                    const int32_t out_offset,
+                                                    const int32_t activation_min,
+                                                    const int32_t activation_max,
+                                                    const uint16_t row_x_col,
+                                                    const int32_t *const output_bias,
+                                                    int8_t *out);
 
 /**
  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in non-padded cases. rhs
@@ -1163,18 +1167,18 @@ muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_s8(const int8_t *lhs,
  *                  - rhs
  */
 muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_s4(const int8_t *lhs,
-                                                  const int8_t *rhs,
-                                                  const int32_t lhs_offset,
-                                                  const int32_t active_ch,
-                                                  const int32_t total_ch,
-                                                  const int32_t *out_shift,
-                                                  const int32_t *out_mult,
-                                                  const int32_t out_offset,
-                                                  const int32_t activation_min,
-                                                  const int32_t activation_max,
-                                                  const uint16_t row_x_col,
-                                                  const int32_t *const output_bias,
-                                                  int8_t *out);
+                                                    const int8_t *rhs,
+                                                    const int32_t lhs_offset,
+                                                    const int32_t active_ch,
+                                                    const int32_t total_ch,
+                                                    const int32_t *out_shift,
+                                                    const int32_t *out_mult,
+                                                    const int32_t out_offset,
+                                                    const int32_t activation_min,
+                                                    const int32_t activation_max,
+                                                    const uint16_t row_x_col,
+                                                    const int32_t *const output_bias,
+                                                    int8_t *out);
 
 /**
  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in non-padded cases.
@@ -1203,15 +1207,15 @@ muriscv_nn_status muriscv_nn_depthwise_conv_nt_t_s4(const int8_t *lhs,
  *                  - rhs
  */
 int16_t *muriscv_nn_depthwise_conv_nt_t_s16(const int16_t *lhs,
-                                        const int8_t *rhs,
-                                        const uint16_t num_ch,
-                                        const int32_t *out_shift,
-                                        const int32_t *out_mult,
-                                        const int32_t activation_min,
-                                        const int32_t activation_max,
-                                        const uint16_t row_x_col,
-                                        const int64_t *const output_bias,
-                                        int16_t *out);
+                                            const int8_t *rhs,
+                                            const uint16_t num_ch,
+                                            const int32_t *out_shift,
+                                            const int32_t *out_mult,
+                                            const int32_t activation_min,
+                                            const int32_t activation_max,
+                                            const uint16_t row_x_col,
+                                            const int64_t *const output_bias,
+                                            int16_t *out);
 
 /**
   @brief         Read 2 s16 elements and post increment pointer.
@@ -1305,9 +1309,10 @@ __STATIC_FORCEINLINE void muriscv_nn_write_s8x4_ia(int8_t **in, int32_t value)
     *in += 4;
 }
 
-//MURISCV_NN NEW CODE
+// MURISCV_NN NEW CODE
 /**
- @brief         Read 2 q15 elements and post increment pointer. Always uses memcpy for read, consistent speed, regardless of alignment
+ @brief         Read 2 q15 elements and post increment pointer. Always uses memcpy for read, consistent speed,
+ regardless of alignment
  @param[in]     in_q15   Pointer to pointer that holds address of input.
  @return        q31 value
 */
@@ -1321,14 +1326,15 @@ static inline q31_t muriscv_nn_read_q15x2_ia_slow(const q15_t **in_q15)
 }
 
 /**
- @brief         Read 2 q15 elements and post increment pointer.  Performs best for word aligned reads, otherwise performs extremely slowly
+ @brief         Read 2 q15 elements and post increment pointer.  Performs best for word aligned reads, otherwise
+ performs extremely slowly
  @param[in]     in_q15   Pointer to pointer that holds address of input.
  @return        q31 value
 */
 static inline q31_t muriscv_nn_read_q15x2_ia_fast(const q15_t **in_q15)
 {
     q31_t val;
-    val = (*((uint32_t*)(*in_q15)));
+    val = (*((uint32_t *)(*in_q15)));
     *in_q15 += 2;
 
     return val;
@@ -1342,32 +1348,34 @@ static inline q31_t muriscv_nn_read_q15x2_ia_fast(const q15_t **in_q15)
 static inline q31_t muriscv_nn_read_q15x2_ia_aligned(const q15_t **in_q15, const uint8_t alignment)
 {
     q31_t val;
-    if(alignment == 0)
+    if (alignment == 0)
     {
-         val = (*((uint32_t*)(*in_q15)));       
+        val = (*((uint32_t *)(*in_q15)));
     }
     else
     {
-         val = (uint32_t)((*((uint64_t*)(*in_q15 - 1))) >> 16); 
+        val = (uint32_t)((*((uint64_t *)(*in_q15 - 1))) >> 16);
     }
     *in_q15 += 2;
 
     return val;
 }
 /**
-  @brief         Read 4 q7 from q7 pointer and post increment pointer.  Performs best for word aligned reads, otherwise performs extremely slowly
+  @brief         Read 4 q7 from q7 pointer and post increment pointer.  Performs best for word aligned reads, otherwise
+  performs extremely slowly
   @param[in]     in_q7       Pointer to pointer that holds address of input.
   @return        q31 value
  */
 static inline q31_t muriscv_nn_read_q7x4_ia_fast(const q7_t **in_q7)
 {
     q31_t val;
-    val = (*((q31_t*)(*in_q7)));
+    val = (*((q31_t *)(*in_q7)));
     *in_q7 += 4;
     return val;
 }
 /**
-  @brief         Read 4 q7 from q7 pointer and post increment pointer.  Always uses memcpy for read, consistent speed, regardless of alignment
+  @brief         Read 4 q7 from q7 pointer and post increment pointer.  Always uses memcpy for read, consistent speed,
+  regardless of alignment
   @param[in]     in_q7       Pointer to pointer that holds address of input.
   @return        q31 value
  */
@@ -1385,16 +1393,17 @@ static inline q31_t muriscv_nn_read_q7x4_ia_slow(const q7_t **in_q7)
   @param[in]     alignment_bits   Number of bits to shift to receive desired value, precalculated for efficency
   @return        q31 value
  */
-static inline q31_t muriscv_nn_read_q7x4_ia_aligned(const q7_t **in_q7, const uint8_t alignment, const uint8_t alignment_bits)
+static inline q31_t
+muriscv_nn_read_q7x4_ia_aligned(const q7_t **in_q7, const uint8_t alignment, const uint8_t alignment_bits)
 {
     q31_t val;
     if (alignment == 0)
     {
-        val = (*((q31_t*)(*in_q7)));
+        val = (*((q31_t *)(*in_q7)));
     }
     else
     {
-        val = (uint32_t)((*((uint64_t*)(*in_q7 - alignment))) >> (alignment_bits));
+        val = (uint32_t)((*((uint64_t *)(*in_q7 - alignment))) >> (alignment_bits));
     }
     *in_q7 += 4;
     return val;
@@ -1407,7 +1416,7 @@ static inline q31_t muriscv_nn_read_q7x4_ia_aligned(const q7_t **in_q7, const ui
 static inline q31_t muriscv_nn_read_q15x2(const q15_t *in_q15)
 {
     q31_t val;
-    val = (*((uint32_t*)(in_q15)));
+    val = (*((uint32_t *)(in_q15)));
     return val;
 }
 
@@ -1419,7 +1428,7 @@ static inline q31_t muriscv_nn_read_q15x2(const q15_t *in_q15)
 static inline q31_t muriscv_nn_read_q7x4(const q7_t *in_q7)
 {
     q31_t val;
-    val = (*((uint32_t*)(in_q7)));
+    val = (*((uint32_t *)(in_q7)));
 
     return val;
 }
@@ -1447,12 +1456,9 @@ static inline void muriscv_nn_write_q7x4(q7_t *in, q31_t value) { memcpy(in, &va
   @param[in]     in       Double pointer to input value
   @param[in]     value    Four bytes to copy
  */
-static inline void muriscv_nn_write_q7x4_fast(q7_t *in, q31_t value) 
-{
-    *((uint32_t*)(in)) = value;
-}
-//MURISCV_NN END OF NEW CODE
-//MURISCV_NN NEW CODE
+static inline void muriscv_nn_write_q7x4_fast(q7_t *in, q31_t value) { *((uint32_t *)(in)) = value; }
+// MURISCV_NN END OF NEW CODE
+// MURISCV_NN NEW CODE
 #if defined(USE_VEXT)
 
 // TODO(fabianpedd): Clean these muriscv_nn_requantize functions up and find a consitent naming scheme that respects
@@ -1498,23 +1504,19 @@ muriscv_nn_requantize_vec(const vint32m8_t val, const q31_t multiplier, const q3
  * rounding away from zero at the halfway point, matching scalar requantize.
  * This helper implements the default double-rounding mode only.
  */
-static inline vint32m8_t muriscv_nn_requantize_vint32m8(vint32m8_t output,
-                                                     const vint32m8_t multiplier,
-                                                     const vint32m8_t shift,
-                                                     const size_t vl)
+static inline vint32m8_t
+muriscv_nn_requantize_vint32m8(vint32m8_t output, const vint32m8_t multiplier, const vint32m8_t shift, const size_t vl)
 {
     // Apply each channel's positive shift before the fractional
     // multiply, then round its right shift as in scalar requantize.
-    const vuint32m8_t left_shift = __riscv_vreinterpret_v_i32m8_u32m8(
-        __riscv_vmax_vx_i32m8(shift, 0, vl));
+    const vuint32m8_t left_shift = __riscv_vreinterpret_v_i32m8_u32m8(__riscv_vmax_vx_i32m8(shift, 0, vl));
     output = __riscv_vsll_vv_i32m8(output, left_shift, vl);
-    output = __riscv_vsmul_vv_i32m8(
-        output, multiplier, __RISCV_VXRM_RNU, vl);
+    output = __riscv_vsmul_vv_i32m8(output, multiplier, __RISCV_VXRM_RNU, vl);
 
-    const vuint32m8_t right_shift = __riscv_vreinterpret_v_i32m8_u32m8(
-        __riscv_vneg_v_i32m8(__riscv_vmin_vx_i32m8(shift, 0, vl), vl));
-    const vint32m8_t remainder_mask = __riscv_vsub_vx_i32m8(
-        __riscv_vsll_vv_i32m8(__riscv_vmv_v_x_i32m8(1, vl), right_shift, vl), 1, vl);
+    const vuint32m8_t right_shift =
+        __riscv_vreinterpret_v_i32m8_u32m8(__riscv_vneg_v_i32m8(__riscv_vmin_vx_i32m8(shift, 0, vl), vl));
+    const vint32m8_t remainder_mask =
+        __riscv_vsub_vx_i32m8(__riscv_vsll_vv_i32m8(__riscv_vmv_v_x_i32m8(1, vl), right_shift, vl), 1, vl);
     const vint32m8_t remainder = __riscv_vand_vv_i32m8(output, remainder_mask, vl);
     vint32m8_t threshold = __riscv_vsra_vx_i32m8(remainder_mask, 1, vl);
     output = __riscv_vsra_vv_i32m8(output, right_shift, vl);
@@ -1585,52 +1587,38 @@ muriscv_nn_requantize_vint32m2(vint32m2_t val, vint32m2_t multiplier, vint32m2_t
 }
 
 static inline vint32m1_t
-muriscv_nn_requantize_vint32m1(vint32m1_t val,
-                             vint32m1_t multiplier,
-                             vint32m1_t shift,
-                             size_t vl)
+muriscv_nn_requantize_vint32m1(vint32m1_t val, vint32m1_t multiplier, vint32m1_t shift, size_t vl)
 {
     // TODO: implement MURISCV_NN_USE_SINGLE_ROUNDING
 
-    vuint32m1_t u_shift =
-        __riscv_vreinterpret_v_i32m1_u32m1(
-            __riscv_vneg_v_i32m1(shift, vl));
+    vuint32m1_t u_shift = __riscv_vreinterpret_v_i32m1_u32m1(__riscv_vneg_v_i32m1(shift, vl));
 
     // Fractional multiply with round-to-nearest, ties up.
-    vint32m1_t dividend =
-        __riscv_vsmul_vv_i32m1(val, multiplier, __RISCV_VXRM_RNU, vl);
+    vint32m1_t dividend = __riscv_vsmul_vv_i32m1(val, multiplier, __RISCV_VXRM_RNU, vl);
 
-    vint32m1_t result =
-        __riscv_vsra_vv_i32m1(dividend, u_shift, vl);
+    vint32m1_t result = __riscv_vsra_vv_i32m1(dividend, u_shift, vl);
 
     // remainder_mask = (1 << shift) - 1
     vint32m1_t remainder_mask =
-        __riscv_vsub_vx_i32m1(
-            __riscv_vsll_vv_i32m1(
-                __riscv_vmv_v_x_i32m1(1, vl), u_shift, vl),
-            1, vl);
+        __riscv_vsub_vx_i32m1(__riscv_vsll_vv_i32m1(__riscv_vmv_v_x_i32m1(1, vl), u_shift, vl), 1, vl);
 
-    vint32m1_t threshold =
-        __riscv_vsra_vx_i32m1(remainder_mask, 1, vl);
+    vint32m1_t threshold = __riscv_vsra_vx_i32m1(remainder_mask, 1, vl);
 
     // If result < 0, increment threshold; preserve other lanes.
     vbool32_t mask = __riscv_vmslt_vx_i32m1_b32(result, 0, vl);
-    threshold =
-        __riscv_vadd_vx_i32m1_mu(mask, threshold, threshold, 1, vl);
+    threshold = __riscv_vadd_vx_i32m1_mu(mask, threshold, threshold, 1, vl);
 
-    vint32m1_t remainder =
-        __riscv_vand_vv_i32m1(remainder_mask, dividend, vl);
+    vint32m1_t remainder = __riscv_vand_vv_i32m1(remainder_mask, dividend, vl);
 
     // If remainder > threshold, increment result; preserve other lanes.
     mask = __riscv_vmsgt_vv_i32m1_b32(remainder, threshold, vl);
-    result =
-        __riscv_vadd_vx_i32m1_mu(mask, result, result, 1, vl);
+    result = __riscv_vadd_vx_i32m1_mu(mask, result, result, 1, vl);
 
     return result;
 }
 #endif
-//MURISCV_NN END OF NEW CODE
-//MURISCV_NN NEW CODE
+// MURISCV_NN END OF NEW CODE
+// MURISCV_NN NEW CODE
 /**
  * @brief           memcpy optimized for RVV
  * @param[in, out]  dst         Destination pointer
@@ -1672,8 +1660,8 @@ static inline void muriscv_nn_memset(int8_t *dst, const int8_t val, size_t block
     memset(dst, val, block_size);
 #endif
 }
-//MURISCV_NN END OF NEW CODE
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN END OF NEW CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           memset optimized for MVE TODO: update for RISCV-VEXT
  * @param[in, out]  dst         Destination pointer
@@ -1681,32 +1669,33 @@ static inline void muriscv_nn_memset(int8_t *dst, const int8_t val, size_t block
  * @param[in]       block_size  Number of bytes to copy.
  *
  */
-__STATIC_FORCEINLINE void muriscv_nn_memset_s8(int8_t *dst, const int8_t val, uint32_t block_size)  //supposed to be __STATIC_FORCEINLINE, TODO:
+__STATIC_FORCEINLINE void
+muriscv_nn_memset_s8(int8_t *dst, const int8_t val, uint32_t block_size) // supposed to be __STATIC_FORCEINLINE, TODO:
 {
-/*#if defined(ARM_MATH_MVEI)
-    __asm volatile("   vdup.8                  q0, %[set_val]             \n"
-                   "   wlstp.8                 lr, %[cnt], 1f             \n"
-                   "2:                                                    \n"
-                   "   vstrb.8                 q0, [%[in]], #16            \n"
-                   "   letp                    lr, 2b                     \n"
-                   "1:                                                    \n"
-                   : [in] "+r"(dst)
-                   : [cnt] "r"(block_size), [set_val] "r"(val)
-                   : "q0", "memory", "r14");
-#else*/
+    /*#if defined(ARM_MATH_MVEI)
+        __asm volatile("   vdup.8                  q0, %[set_val]             \n"
+                       "   wlstp.8                 lr, %[cnt], 1f             \n"
+                       "2:                                                    \n"
+                       "   vstrb.8                 q0, [%[in]], #16            \n"
+                       "   letp                    lr, 2b                     \n"
+                       "1:                                                    \n"
+                       : [in] "+r"(dst)
+                       : [cnt] "r"(block_size), [set_val] "r"(val)
+                       : "q0", "memory", "r14");
+    #else*/
     memset(dst, val, block_size);
-//#endif
+    // #endif
 }
 
 #if defined(USE_PEXT)
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s4 word into two s8 words.
  */
 __STATIC_FORCEINLINE void read_and_pad_s4(const int8_t *source, int32_t *out1, int32_t *out2)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int16_t in = muriscv_nn_read_s8x2(source);
     int32_t inA = (in & 0x00FF) | ((in & 0xFF00) << 8);
 
@@ -1716,7 +1705,7 @@ __STATIC_FORCEINLINE void read_and_pad_s4(const int8_t *source, int32_t *out1, i
     out2 = NULL;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s4 word into two s8 words.
  * @details   The s4 elements are not evenly aligned on the byte boundary, so 3 bytes need to be read instead of 2.
@@ -1731,7 +1720,7 @@ __STATIC_FORCEINLINE void read_and_pad_s4(const int8_t *source, int32_t *out1, i
  */
 __STATIC_FORCEINLINE void read_and_pad_s4_uneven(const int8_t *source, int32_t *out1, int32_t *out2)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int32_t inA1 = (source[0] & 0xFF) | ((source[1] & 0xFF) << 16);
     int32_t inA2 = (source[1] & 0xFF) | ((source[2] & 0xFF) << 16);
 
@@ -1739,119 +1728,117 @@ __STATIC_FORCEINLINE void read_and_pad_s4_uneven(const int8_t *source, int32_t *
     //*out2 = SXTB16_RORn(__sxtb16(inA1), 4);
     out1 = NULL;
     out2 = NULL;
-    
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s4 word into two s16 words with ordering.
  */
 __STATIC_FORCEINLINE void read_and_pad_s4_ordered(const int8_t *source, int32_t *out1, int32_t *out2)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int16_t in = muriscv_nn_read_s8x2(source);
     int32_t inA = (in & 0x00FF) | ((in & 0xFF00) << 8);
-    //int32_t inAbuf1 = SXTB16_RORn(__sxtb16(inA), 4);
-    //int32_t inAbuf2 = SXTB16_RORn(__sxtb16(inA << 4), 4);
-    #ifndef ARM_MATH_BIG_ENDIAN
-    //*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #else
-    //*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #endif
+// int32_t inAbuf1 = SXTB16_RORn(__sxtb16(inA), 4);
+// int32_t inAbuf2 = SXTB16_RORn(__sxtb16(inA << 4), 4);
+#ifndef ARM_MATH_BIG_ENDIAN
+//*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#else
+//*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#endif
     out1 = NULL;
     out2 = NULL;
-    
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s8 word into two s16 words with ordering.
  */
 __STATIC_FORCEINLINE const int8_t *read_and_pad(const int8_t *source, int32_t *out1, int32_t *out2)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int32_t inA = muriscv_nn_read_s8x4_ia(&source);
-    //int32_t inAbuf1 = SXTB16_RORn((uint32_t)inA, 8);
-    //int32_t inAbuf2 = SXTB16(inA);
+    // int32_t inAbuf1 = SXTB16_RORn((uint32_t)inA, 8);
+    // int32_t inAbuf2 = SXTB16(inA);
 
-    #ifndef ARM_MATH_BIG_ENDIAN
-    //*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #else
-    //*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #endif
+#ifndef ARM_MATH_BIG_ENDIAN
+//*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#else
+//*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#endif
     out1 = NULL;
     out2 = NULL;
 
     return source;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s8 word into two s16 words with ordering and addition.
  */
 __STATIC_FORCEINLINE void read_pad_and_add_s8(const int8_t *source, int32_t *out1, int32_t *out2, const uint32_t add)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int32_t inA = muriscv_nn_read_s8x4(source);
-    //int32_t inAbuf1 = SXTAB16_RORn(add, (uint32_t)inA, 8);
-    //int32_t inAbuf2 = SXTAB16(add, inA);
+    // int32_t inAbuf1 = SXTAB16_RORn(add, (uint32_t)inA, 8);
+    // int32_t inAbuf2 = SXTAB16(add, inA);
 
-    #ifndef ARM_MATH_BIG_ENDIAN
-    //*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #else
-    //*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
-    //*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
-    #endif
+#ifndef ARM_MATH_BIG_ENDIAN
+//*out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#else
+//*out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+//*out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+#endif
     out1 = NULL;
     out2 = NULL;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand two bytes into one word with ordering.
  */
 __STATIC_FORCEINLINE void read_and_pad_s8x2(const int8_t *source, int32_t *out)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int16_t in = muriscv_nn_read_s8x2(source);
     int32_t inA = (in & 0x00FF) | ((in & 0xFF00) << 8);
     //*out = SXTB16(inA);
     out = NULL;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand two bytes into one word with ordering and addition.
  */
 __STATIC_FORCEINLINE void read_pad_and_add_s8x2(const int8_t *source, int32_t *out, const uint32_t add)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int16_t in = muriscv_nn_read_s8x2(source);
     int32_t inA = (in & 0x00FF) | ((in & 0xFF00) << 8);
     //*out = SXTAB16(add, inA);
     out = NULL;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief read and expand one s8 word into two s16 words with no additional ordering.
  */
 __STATIC_FORCEINLINE const int8_t *read_and_pad_reordered(const int8_t *source, int32_t *out1, int32_t *out2)
 {
-    //UNIMP FOR RISCV
+    // UNIMP FOR RISCV
     int32_t inA = muriscv_nn_read_s8x4_ia(&source);
-    #ifndef ARM_MATH_BIG_ENDIAN
-    //*out2 = SXTB16(ROR((uint32_t)inA, 8));
-    //*out1 = SXTB16(inA);
-    #else
-    //*out1 = SXTB16(ROR((uint32_t)inA, 8));
-    //*out2 = SXTB16(inA);
-    #endif
+#ifndef ARM_MATH_BIG_ENDIAN
+//*out2 = SXTB16(ROR((uint32_t)inA, 8));
+//*out1 = SXTB16(inA);
+#else
+//*out1 = SXTB16(ROR((uint32_t)inA, 8));
+//*out2 = SXTB16(inA);
+#endif
     out1 = NULL;
     out2 = NULL;
 
@@ -1883,17 +1870,17 @@ __STATIC_FORCEINLINE const int8_t *read_and_pad_reordered(const int8_t *source, 
  *            Supported framework: TensorFlow Lite micro.
  */
 int8_t *muriscv_nn_mat_mult_kernel_s4_s16(const int8_t *input_a,
-                                      const int16_t *input_b,
-                                      const uint16_t output_ch,
-                                      const int32_t *out_shift,
-                                      const int32_t *out_mult,
-                                      const int32_t out_offset,
-                                      const int32_t activation_min,
-                                      const int32_t activation_max,
-                                      const int32_t num_col_a,
-                                      const int32_t *const output_bias,
-                                      int8_t *out_0);
-//MURISCV_NN CUSTOM CODE
+                                          const int16_t *input_b,
+                                          const uint16_t output_ch,
+                                          const int32_t *out_shift,
+                                          const int32_t *out_mult,
+                                          const int32_t out_offset,
+                                          const int32_t activation_min,
+                                          const int32_t activation_max,
+                                          const int32_t num_col_a,
+                                          const int32_t *const output_bias,
+                                          int8_t *out_0);
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief Matrix-multiplication function for convolution with per-channel requantization.
  * @param[in]       input_a     pointer to operand A
@@ -1956,18 +1943,18 @@ q7_t *muriscv_nn_mat_mult_kernel_s8_s16(const q7_t *input_a,
  * grouped convolution. Supported framework: TensorFlow Lite micro.
  */
 int8_t *muriscv_nn_mat_mult_kernel_row_offset_s8_s16(const int8_t *input_a,
-                                                 const int16_t *input_b,
-                                                 const uint16_t output_ch,
-                                                 const int32_t *out_shift,
-                                                 const int32_t *out_mult,
-                                                 const int32_t out_offset,
-                                                 const int16_t activation_min,
-                                                 const int16_t activation_max,
-                                                 const int32_t num_col_a,
-                                                 const int32_t aligned_num_col_a,
-                                                 const int32_t *const output_bias,
-                                                 const int32_t row_address_offset,
-                                                 int8_t *out_0);
+                                                     const int16_t *input_b,
+                                                     const uint16_t output_ch,
+                                                     const int32_t *out_shift,
+                                                     const int32_t *out_mult,
+                                                     const int32_t out_offset,
+                                                     const int16_t activation_min,
+                                                     const int16_t activation_max,
+                                                     const int32_t num_col_a,
+                                                     const int32_t aligned_num_col_a,
+                                                     const int32_t *const output_bias,
+                                                     const int32_t row_address_offset,
+                                                     int8_t *out_0);
 
 /**
  * @brief Common softmax function for s8 input and s8 or s16 output
@@ -1985,21 +1972,21 @@ int8_t *muriscv_nn_mat_mult_kernel_row_offset_s8_s16(const int8_t *input_a,
  *
  */
 void muriscv_nn_softmax_common_s8(const int8_t *input,
-                              const int32_t num_rows,
-                              const int32_t row_size,
-                              const int32_t mult,
-                              const int32_t shift,
-                              const int32_t diff_min,
-                              const bool int16_output,
-                              void *output);
+                                  const int32_t num_rows,
+                                  const int32_t row_size,
+                                  const int32_t mult,
+                                  const int32_t shift,
+                                  const int32_t diff_min,
+                                  const bool int16_output,
+                                  void *output);
 
 /**
  * @brief macro for adding rounding offset
  */
 #ifndef MURISCV_NN_TRUNCATE
-    #define NN_ROUND(out_shift) ((0x1 << out_shift) >> 1)
+#define NN_ROUND(out_shift) ((0x1 << out_shift) >> 1)
 #else
-    #define NN_ROUND(out_shift) 0
+#define NN_ROUND(out_shift) 0
 #endif
 
 // Macros for shortening quantization functions' names and avoid long lines
@@ -2139,8 +2126,8 @@ __STATIC_FORCEINLINE int32_t muriscv_nn_requantize(const int32_t val, const int3
 
     return result;
 #else
-    return muriscv_nn_divide_by_power_of_two(muriscv_nn_doubling_high_mult_no_sat(val * (1 << LEFT_SHIFT(shift)), multiplier),
-                                         RIGHT_SHIFT(shift));
+    return muriscv_nn_divide_by_power_of_two(
+        muriscv_nn_doubling_high_mult_no_sat(val * (1 << LEFT_SHIFT(shift)), multiplier), RIGHT_SHIFT(shift));
 #endif
 }
 
@@ -2155,8 +2142,8 @@ __STATIC_FORCEINLINE int32_t muriscv_nn_requantize(const int32_t val, const int3
  *
  */
 __STATIC_FORCEINLINE int32_t muriscv_nn_requantize_s64(const int64_t val,
-                                                   const int32_t reduced_multiplier,
-                                                   const int32_t shift)
+                                                       const int32_t reduced_multiplier,
+                                                       const int32_t shift)
 {
     const int64_t new_val = val * reduced_multiplier;
 
@@ -2166,7 +2153,7 @@ __STATIC_FORCEINLINE int32_t muriscv_nn_requantize_s64(const int64_t val,
     return result;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           memcpy optimized for RVV
  * @param[in, out]  dst         Destination pointer
@@ -2188,7 +2175,7 @@ __STATIC_FORCEINLINE void muriscv_nn_memcpy_s8(int8_t *dst, const int8_t *src, s
 #endif
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           memcpy wrapper for int16
  * @param[in, out]  dst         Destination pointer
@@ -2202,7 +2189,7 @@ __STATIC_FORCEINLINE void muriscv_nn_memcpy_q15(int16_t *dst, const int16_t *src
 }
 
 #if defined(USE_VEXT)
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Vector saturating doubling high multiply returning high half.
  * @param[in]       m1        Multiplicand
@@ -2212,11 +2199,11 @@ __STATIC_FORCEINLINE void muriscv_nn_memcpy_q15(int16_t *dst, const int16_t *src
  */
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_doubling_high_mult_mve(const int32x4_t m1, const int32_t m2)
 {
-     //return vqrdmulhq_n_s32(m1, m2);
-     return 0;
+    // return vqrdmulhq_n_s32(m1, m2);
+    return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Vector rounding divide by power of two.
  * @param[in]       dividend - Dividend vector
@@ -2227,14 +2214,14 @@ __STATIC_FORCEINLINE int32x4_t muriscv_nn_doubling_high_mult_mve(const int32x4_t
  */
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve(const int32x4_t dividend, const int32_t exponent)
 {
-     //const int32x4_t shift = vdupq_n_s32(-exponent);
-     //const int32x4_t fixup = vshrq_n_s32(vandq_s32(dividend, shift), 31);
-     //const int32x4_t fixed_up_dividend = vqaddq_s32(dividend, fixup);
-     //return vrshlq_s32(fixed_up_dividend, shift);
-     return 0;
+    // const int32x4_t shift = vdupq_n_s32(-exponent);
+    // const int32x4_t fixup = vshrq_n_s32(vandq_s32(dividend, shift), 31);
+    // const int32x4_t fixed_up_dividend = vqaddq_s32(dividend, fixup);
+    // return vrshlq_s32(fixed_up_dividend, shift);
+    return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Requantize a given vector.
  * @param[in]       val         Vector to be requantized
@@ -2244,27 +2231,30 @@ __STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve(const int32
  * @return          Returns (val * multiplier)/(2 ^ shift)
  *
  */
-__STATIC_FORCEINLINE int32x4_t muriscv_nn_requantize_mve(const int32x4_t val, const int32_t multiplier, const int32_t shift)
+__STATIC_FORCEINLINE int32x4_t muriscv_nn_requantize_mve(const int32x4_t val,
+                                                         const int32_t multiplier,
+                                                         const int32_t shift)
 {
-     //#ifdef CMSIS_NN_USE_SINGLE_ROUNDING
-     //const int right_shift = MIN(-1, shift);
-     //const int left_shift = shift - right_shift;
+    // #ifdef CMSIS_NN_USE_SINGLE_ROUNDING
+    // const int right_shift = MIN(-1, shift);
+    // const int left_shift = shift - right_shift;
 
-     //const int32x4_t left_shift_dup = vdupq_n_s32(left_shift);
-     //const int32x4_t right_shift_dup = vdupq_n_s32(right_shift);
+    // const int32x4_t left_shift_dup = vdupq_n_s32(left_shift);
+    // const int32x4_t right_shift_dup = vdupq_n_s32(right_shift);
 
-     //int32x4_t result = vqdmulhq_n_s32(vshlq_s32(val, left_shift_dup), multiplier);
-     //result = vrshlq_s32(result, right_shift_dup);
+    // int32x4_t result = vqdmulhq_n_s32(vshlq_s32(val, left_shift_dup), multiplier);
+    // result = vrshlq_s32(result, right_shift_dup);
 
-     //return result;
-     //#else
-     //return muriscv_nn_divide_by_power_of_two_mve(
-     //    muriscv_nn_doubling_high_mult_mve(vshlq_s32(val, vdupq_n_s32(LEFT_SHIFT(shift))), multiplier), RIGHT_SHIFT(shift));
-     //#endif
-     return 0;
+    // return result;
+    // #else
+    // return muriscv_nn_divide_by_power_of_two_mve(
+    //     muriscv_nn_doubling_high_mult_mve(vshlq_s32(val, vdupq_n_s32(LEFT_SHIFT(shift))), multiplier),
+    //     RIGHT_SHIFT(shift));
+    // #endif
+    return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Vector saturating doubling high multiply with predication returning high half.
  * @param[in]       m1        Multiplicand
@@ -2275,15 +2265,15 @@ __STATIC_FORCEINLINE int32x4_t muriscv_nn_requantize_mve(const int32x4_t val, co
  *
  */
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_doubling_high_mult_mve_pred(const int32x4_t m1,
-                                                               const int32_t m2,
-                                                               const mve_pred16_t p,
-                                                               const int32x4_t v_zero)
+                                                                      const int32_t m2,
+                                                                      const mve_pred16_t p,
+                                                                      const int32x4_t v_zero)
 {
-    //return vqrdmulhq_m_n_s32(v_zero, m1, m2, p);
+    // return vqrdmulhq_m_n_s32(v_zero, m1, m2, p);
     return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Vector rounding divide by power of two with predication.
  * @param[in]       dividend - Dividend vector
@@ -2295,18 +2285,18 @@ __STATIC_FORCEINLINE int32x4_t muriscv_nn_doubling_high_mult_mve_pred(const int3
  *
  */
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve_pred(const int32x4_t dividend,
-                                                                   const int32_t exponent,
-                                                                   const mve_pred16_t p,
-                                                                   const int32x4_t v_zero)
+                                                                          const int32_t exponent,
+                                                                          const mve_pred16_t p,
+                                                                          const int32x4_t v_zero)
 {
-    //const int32x4_t shift = vdupq_x_n_s32(-exponent, p);
-    //const int32x4_t fixup = vshrq_x_n_s32(vandq_x_s32(dividend, shift, p), 31, p);
-    //const int32x4_t fixed_up_dividend = vqaddq_m_s32(v_zero, dividend, fixup, p);
-    //return vrshlq_m_s32(v_zero, fixed_up_dividend, shift, p);
+    // const int32x4_t shift = vdupq_x_n_s32(-exponent, p);
+    // const int32x4_t fixup = vshrq_x_n_s32(vandq_x_s32(dividend, shift, p), 31, p);
+    // const int32x4_t fixed_up_dividend = vqaddq_m_s32(v_zero, dividend, fixup, p);
+    // return vrshlq_m_s32(v_zero, fixed_up_dividend, shift, p);
     return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 /**
  * @brief           Requantize a given vector with predication.
  * @param[in]       val         Vector to be requantized
@@ -2318,75 +2308,77 @@ __STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve_pred(const 
  *
  */
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_requantize_mve_pred(const int32x4_t val,
-                                                       const int32_t multiplier,
-                                                       const int32_t shift,
-                                                       const mve_pred16_t p)
+                                                              const int32_t multiplier,
+                                                              const int32_t shift,
+                                                              const mve_pred16_t p)
 {
-    //#ifdef MURISCV_NN_USE_SINGLE_ROUNDING
-    //const int right_shift = MIN(-1, shift);
-    //const int left_shift = shift - right_shift;
-    //const int32x4_t v_zero = vcreateq_s32(0, 0);
+    // #ifdef MURISCV_NN_USE_SINGLE_ROUNDING
+    // const int right_shift = MIN(-1, shift);
+    // const int left_shift = shift - right_shift;
+    // const int32x4_t v_zero = vcreateq_s32(0, 0);
 
-    //const int32x4_t left_shift_dup = vdupq_x_n_s32(left_shift, p);
-    //const int32x4_t right_shift_dup = vdupq_x_n_s32(right_shift, p);
+    // const int32x4_t left_shift_dup = vdupq_x_n_s32(left_shift, p);
+    // const int32x4_t right_shift_dup = vdupq_x_n_s32(right_shift, p);
 
-    //int32x4_t result = vqrdmulhq_m_n_s32(v_zero, vshlq_m_s32(v_zero, val, left_shift_dup, p), multiplier, p);
-    //result = vrshlq_m_s32(v_zero, result, right_shift_dup, p);
+    // int32x4_t result = vqrdmulhq_m_n_s32(v_zero, vshlq_m_s32(v_zero, val, left_shift_dup, p), multiplier, p);
+    // result = vrshlq_m_s32(v_zero, result, right_shift_dup, p);
 
-    //return result;
-    //#else
-    //const int32x4_t v_zero = vcreateq_s32(0, 0);
-    //return muriscv_nn_divide_by_power_of_two_mve_pred(
-    //    muriscv_nn_doubling_high_mult_mve_pred(
-    //        vshlq_m_s32(v_zero, val, vdupq_x_n_s32(LEFT_SHIFT(shift), p), p), multiplier, p, v_zero),
-    //    RIGHT_SHIFT(shift),
-    //    p,
-    //    v_zero);
-    //#endif
+    // return result;
+    // #else
+    // const int32x4_t v_zero = vcreateq_s32(0, 0);
+    // return muriscv_nn_divide_by_power_of_two_mve_pred(
+    //     muriscv_nn_doubling_high_mult_mve_pred(
+    //         vshlq_m_s32(v_zero, val, vdupq_x_n_s32(LEFT_SHIFT(shift), p), p), multiplier, p, v_zero),
+    //     RIGHT_SHIFT(shift),
+    //     p,
+    //     v_zero);
+    // #endif
     return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_doubling_high_mult_mve_32x4(const int32x4_t m1, const int32x4_t m2)
 {
-     //return vqrdmulhq_s32(m1, m2);
-     return 0;
+    // return vqrdmulhq_s32(m1, m2);
+    return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
-__STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve_32x4(const int32x4_t dividend, const int32x4_t exponent)
+// MURISCV_NN CUSTOM CODE
+__STATIC_FORCEINLINE int32x4_t muriscv_nn_divide_by_power_of_two_mve_32x4(const int32x4_t dividend,
+                                                                          const int32x4_t exponent)
 {
-     //const int32x4_t shift = -exponent;
-     //const int32x4_t fixup = vshrq_n_s32(vandq_s32(dividend, shift), 31);
-     //const int32x4_t fixed_up_dividend = vqaddq_s32(dividend, fixup);
-     //return vrshlq_s32(fixed_up_dividend, shift);
-     return 0;
+    // const int32x4_t shift = -exponent;
+    // const int32x4_t fixup = vshrq_n_s32(vandq_s32(dividend, shift), 31);
+    // const int32x4_t fixed_up_dividend = vqaddq_s32(dividend, fixup);
+    // return vrshlq_s32(fixed_up_dividend, shift);
+    return 0;
 }
 
-//MURISCV_NN CUSTOM CODE
+// MURISCV_NN CUSTOM CODE
 __STATIC_FORCEINLINE int32x4_t muriscv_nn_requantize_mve_32x4(const int32x4_t val,
-                                                        const int32x4_t multiplier,
-                                                        const int32x4_t shift)
+                                                              const int32x4_t multiplier,
+                                                              const int32x4_t shift)
 {
-     //#ifdef CMSIS_NN_USE_SINGLE_ROUNDING
-     //const int32x4_t right_shift = vminq_s32(vdupq_n_s32(-1), shift);
-     //const int32x4_t left_shift = vqsubq_s32(shift, right_shift);
+    // #ifdef CMSIS_NN_USE_SINGLE_ROUNDING
+    // const int32x4_t right_shift = vminq_s32(vdupq_n_s32(-1), shift);
+    // const int32x4_t left_shift = vqsubq_s32(shift, right_shift);
 
-     //int32x4_t result = vqdmulhq_s32(vshlq_s32(val, left_shift), multiplier);
-     //result = vrshlq_s32(result, right_shift);
+    // int32x4_t result = vqdmulhq_s32(vshlq_s32(val, left_shift), multiplier);
+    // result = vrshlq_s32(result, right_shift);
 
-     //return result;
-     //#else
-     //const int32x4_t zz = vdupq_n_s32(0);
-     //const mve_pred16_t p = vcmpgtq_n_s32(shift, 0);
+    // return result;
+    // #else
+    // const int32x4_t zz = vdupq_n_s32(0);
+    // const mve_pred16_t p = vcmpgtq_n_s32(shift, 0);
 
-     //const int32x4_t left_shift = vpselq_s32(shift, zz, p);
-     //const int32x4_t right_shift = -vpselq_s32(zz, shift, p);
+    // const int32x4_t left_shift = vpselq_s32(shift, zz, p);
+    // const int32x4_t right_shift = -vpselq_s32(zz, shift, p);
 
-     //return muriscv_nn_divide_by_power_of_two_mve_32x4(muriscv_nn_doubling_high_mult_mve_32x4(vshlq_s32(val, left_shift), multiplier),
-     //                                           right_shift);
-     //#endif
-     return 0;
+    // return muriscv_nn_divide_by_power_of_two_mve_32x4(muriscv_nn_doubling_high_mult_mve_32x4(vshlq_s32(val,
+    // left_shift), multiplier),
+    //                                            right_shift);
+    // #endif
+    return 0;
 }
 #endif
 
@@ -2491,11 +2483,11 @@ __STATIC_FORCEINLINE void muriscv_nn_write_s8x2_ia(int8_t **dst, int16_t src)
 
  */
 muriscv_nn_status muriscv_nn_lstm_step_s8(const int8_t *data_in,
-                                        const int8_t *hidden_in,
-                                        int8_t *hidden_out,
-                                        const muriscv_nn_lstm_params *params,
-                                        muriscv_nn_lstm_context *buffers,
-                                        const int32_t batch_offset);
+                                          const int8_t *hidden_in,
+                                          int8_t *hidden_out,
+                                          const muriscv_nn_lstm_params *params,
+                                          muriscv_nn_lstm_context *buffers,
+                                          const int32_t batch_offset);
 
 /**
  * @brief Update LSTM function for an iteration step using s16 input and output, and s16 internally.
@@ -2515,11 +2507,11 @@ muriscv_nn_status muriscv_nn_lstm_step_s8(const int8_t *data_in,
 
  */
 muriscv_nn_status muriscv_nn_lstm_step_s16(const int16_t *data_in,
-                                         const int16_t *hidden_in,
-                                         int16_t *hidden_out,
-                                         const muriscv_nn_lstm_params *params,
-                                         muriscv_nn_lstm_context *buffers,
-                                         const int32_t batch_offset);
+                                           const int16_t *hidden_in,
+                                           int16_t *hidden_out,
+                                           const muriscv_nn_lstm_params *params,
+                                           muriscv_nn_lstm_context *buffers,
+                                           const int32_t batch_offset);
 
 /**
  * @brief Updates a LSTM gate for an iteration step of LSTM function, int8x8_16 version.
@@ -2536,11 +2528,11 @@ muriscv_nn_status muriscv_nn_lstm_step_s16(const int16_t *data_in,
  * @return                                      The function returns MURISCV_NN_SUCCESS
  */
 muriscv_nn_status muriscv_nn_lstm_calculate_gate_s8_s16(const int8_t *data_in,
-                                                      const int8_t *hidden_in,
-                                                      const muriscv_nn_lstm_gate *gate_data,
-                                                      const muriscv_nn_lstm_params *params,
-                                                      int16_t *output,
-                                                      const int32_t batch_offset);
+                                                        const int8_t *hidden_in,
+                                                        const muriscv_nn_lstm_gate *gate_data,
+                                                        const muriscv_nn_lstm_params *params,
+                                                        int16_t *output,
+                                                        const int32_t batch_offset);
 
 /**
  * @brief Updates a LSTM gate for an iteration step of LSTM function, int16x8_16 version.
@@ -2557,11 +2549,11 @@ muriscv_nn_status muriscv_nn_lstm_calculate_gate_s8_s16(const int8_t *data_in,
  * @return                                      The function returns MURISCV_NN_SUCCESS
  */
 muriscv_nn_status muriscv_nn_lstm_calculate_gate_s16(const int16_t *data_in,
-                                                   const int16_t *hidden_in,
-                                                   const muriscv_nn_lstm_gate *gate_data,
-                                                   const muriscv_nn_lstm_params *params,
-                                                   int16_t *output,
-                                                   const int32_t batch_offset);
+                                                     const int16_t *hidden_in,
+                                                     const muriscv_nn_lstm_gate *gate_data,
+                                                     const muriscv_nn_lstm_params *params,
+                                                     int16_t *output,
+                                                     const int32_t batch_offset);
 
 /**
  * @brief The result of the multiplication is accumulated to the passed result buffer.
@@ -2577,21 +2569,21 @@ muriscv_nn_status muriscv_nn_lstm_calculate_gate_s16(const int16_t *data_in,
  * @param[in]   rhs_cols         Vector/matarix column length
  * @param[in]   rhs_rows         Row count of matrix
  * @param[in]   batches          Batch size
- * @param[in]   batch_offset     Number of timesteps between consecutive batches in input, see muriscv_nn_lstm_step_s8. Note
- that the output is always stored with sequential batches.
+ * @param[in]   batch_offset     Number of timesteps between consecutive batches in input, see muriscv_nn_lstm_step_s8.
+ Note that the output is always stored with sequential batches.
  * @return                       The function returns <code>MURISCV_NN_SUCCESS</code>
 
  */
 muriscv_nn_status muriscv_nn_vec_mat_mul_result_acc_s8_s16(const int8_t *lhs,
-                                                         const int8_t *rhs,
-                                                         const int32_t *effective_bias,
-                                                         int16_t *dst,
-                                                         const int32_t dst_multiplier,
-                                                         const int32_t dst_shift,
-                                                         const int32_t rhs_cols,
-                                                         const int32_t rhs_rows,
-                                                         const int32_t batches,
-                                                         const int32_t batch_offset);
+                                                           const int8_t *rhs,
+                                                           const int32_t *effective_bias,
+                                                           int16_t *dst,
+                                                           const int32_t dst_multiplier,
+                                                           const int32_t dst_shift,
+                                                           const int32_t rhs_cols,
+                                                           const int32_t rhs_rows,
+                                                           const int32_t batches,
+                                                           const int32_t batch_offset);
 
 /**
  * @brief The result of the multiplication is accumulated to the passed result buffer.
@@ -2613,15 +2605,15 @@ muriscv_nn_status muriscv_nn_vec_mat_mul_result_acc_s8_s16(const int8_t *lhs,
 
  */
 muriscv_nn_status muriscv_nn_vec_mat_mul_result_acc_s16(const int16_t *lhs,
-                                                      const int8_t *rhs,
-                                                      const int64_t *effective_bias,
-                                                      int16_t *dst,
-                                                      const int32_t dst_multiplier,
-                                                      const int32_t dst_shift,
-                                                      const int32_t rhs_cols,
-                                                      const int32_t rhs_rows,
-                                                      const int32_t batches,
-                                                      const int32_t batch_offset);
+                                                        const int8_t *rhs,
+                                                        const int64_t *effective_bias,
+                                                        int16_t *dst,
+                                                        const int32_t dst_multiplier,
+                                                        const int32_t dst_shift,
+                                                        const int32_t rhs_cols,
+                                                        const int32_t rhs_rows,
+                                                        const int32_t batches,
+                                                        const int32_t batch_offset);
 
 /**
  * @brief s16 elementwise multiplication with s8 output
@@ -2640,14 +2632,14 @@ muriscv_nn_status muriscv_nn_vec_mat_mul_result_acc_s16(const int16_t *lhs,
  * @details   Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_elementwise_mul_s16_s8(const int16_t *input_1_vect,
-                                               const int16_t *input_2_vect,
-                                               int8_t *output,
-                                               const int32_t out_offset,
-                                               const int32_t out_mult,
-                                               const int32_t out_shift,
-                                               const int32_t block_size,
-                                               const int32_t batch_size,
-                                               const int32_t batch_offset);
+                                                    const int16_t *input_2_vect,
+                                                    int8_t *output,
+                                                    const int32_t out_offset,
+                                                    const int32_t out_mult,
+                                                    const int32_t out_shift,
+                                                    const int32_t block_size,
+                                                    const int32_t batch_size,
+                                                    const int32_t batch_offset);
 
 /**
  * @brief s16 elementwise multiplication with s16 output
@@ -2666,14 +2658,14 @@ muriscv_nn_status muriscv_nn_elementwise_mul_s16_s8(const int16_t *input_1_vect,
  * @details   Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_elementwise_mul_s16_batch_offset(const int16_t *input_1_vect,
-                                                         const int16_t *input_2_vect,
-                                                         int16_t *output,
-                                                         const int32_t out_offset,
-                                                         const int32_t out_mult,
-                                                         const int32_t out_shift,
-                                                         const int32_t block_size,
-                                                         const int32_t batch_size,
-                                                         const int32_t batch_offset);
+                                                              const int16_t *input_2_vect,
+                                                              int16_t *output,
+                                                              const int32_t out_offset,
+                                                              const int32_t out_mult,
+                                                              const int32_t out_shift,
+                                                              const int32_t block_size,
+                                                              const int32_t batch_size,
+                                                              const int32_t batch_offset);
 
 /**
  * @brief s16 elementwise multiplication. The result of the multiplication is accumulated to the passed result buffer.
@@ -2693,16 +2685,16 @@ muriscv_nn_status muriscv_nn_elementwise_mul_s16_batch_offset(const int16_t *inp
  * @details   Supported framework: TensorFlow Lite micro
  */
 muriscv_nn_status muriscv_nn_elementwise_mul_acc_s16(const int16_t *input_1_vect,
-                                                const int16_t *input_2_vect,
-                                                const int32_t input_1_offset,
-                                                const int32_t input_2_offset,
-                                                int16_t *output,
-                                                const int32_t out_offset,
-                                                const int32_t out_mult,
-                                                const int32_t out_shift,
-                                                const int32_t out_activation_min,
-                                                const int32_t out_activation_max,
-                                                const int32_t block_size);
+                                                     const int16_t *input_2_vect,
+                                                     const int32_t input_1_offset,
+                                                     const int32_t input_2_offset,
+                                                     int16_t *output,
+                                                     const int32_t out_offset,
+                                                     const int32_t out_mult,
+                                                     const int32_t out_shift,
+                                                     const int32_t out_activation_min,
+                                                     const int32_t out_activation_max,
+                                                     const int32_t block_size);
 
 /**
  * @brief Check if a broadcast is required between 2 muriscv_nn_dims.
@@ -2713,7 +2705,8 @@ muriscv_nn_status muriscv_nn_elementwise_mul_acc_s16(const int16_t *input_1_vect
  * @details   Compares each dimension and returns 1 if any dimension does not match.
  *            This function does not check that broadcast rules are met.
  */
-__STATIC_FORCEINLINE int32_t muriscv_nn_check_broadcast_required(const muriscv_nn_dims *shape_1, const muriscv_nn_dims *shape_2)
+__STATIC_FORCEINLINE int32_t muriscv_nn_check_broadcast_required(const muriscv_nn_dims *shape_1,
+                                                                 const muriscv_nn_dims *shape_2)
 {
     if ((shape_1->n != shape_2->n) || (shape_1->h != shape_2->h) || (shape_1->w != shape_2->w) ||
         (shape_1->c != shape_2->c))

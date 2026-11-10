@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * Modifications copyright (C) 2021-2022 Chair of Electronic Design Automation, TUM
+ * Modifications copyright (C) 2026 Johannes Hofmann, THA <johannes.hofmann1@tha.de>
  */
 
 #include <muriscv_nn_functions.h>
